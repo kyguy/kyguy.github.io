@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="iso-8859-1" ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">  
+<!--http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd-->  
+<html xmlns="http://www.w3.org/1999/xhtml"  
+> 
+<head> <title></title> 
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" /> 
+<meta name="generator" content="TeX4ht (http://www.tug.org/tex4ht/)" /> 
+<meta name="originator" content="TeX4ht (http://www.tug.org/tex4ht/)" /> 
+<!-- xhtml,html --> 
+<meta name="src" content="testsuite.tex" /> 
+<link rel="stylesheet" type="text/css" href="testsuite.css" /> 
+</head><body 
+>
+   <div  
+class="centerline">                        <span 
+class="cmcsc-10x-x-120">C<span 
+class="small-caps">l</span><span 
+class="small-caps">o</span><span 
+class="small-caps">u</span><span 
+class="small-caps">d</span> E<span 
+class="small-caps">n</span><span 
+class="small-caps">a</span><span 
+class="small-caps">b</span><span 
+class="small-caps">l</span><span 
+class="small-caps">e</span><span 
+class="small-caps">m</span><span 
+class="small-caps">e</span><span 
+class="small-caps">n</span><span 
+class="small-caps">t</span> T<span 
+class="small-caps">e</span><span 
+class="small-caps">s</span><span 
+class="small-caps">t</span> S<span 
+class="small-caps">u</span><span 
+class="small-caps">i</span><span 
+class="small-caps">t</span><span 
+class="small-caps">e</span></span>                  </div>
+<div  
+class="centerline">                <span 
+class="cmcsc-10">A<span 
+class="small-caps">r</span><span 
+class="small-caps">c</span><span 
+class="small-caps">h</span><span 
+class="small-caps">i</span><span 
+class="small-caps">t</span><span 
+class="small-caps">e</span><span 
+class="small-caps">c</span><span 
+class="small-caps">t</span><span 
+class="small-caps">u</span><span 
+class="small-caps">r</span><span 
+class="small-caps">e</span> <span 
+class="small-caps">f</span><span 
+class="small-caps">o</span><span 
+class="small-caps">r</span> <span 
+class="small-caps">t</span><span 
+class="small-caps">h</span><span 
+class="small-caps">e</span> L<span 
+class="small-caps">a</span><span 
+class="small-caps">y</span><span 
+class="small-caps">p</span><span 
+class="small-caps">e</span><span 
+class="small-caps">r</span><span 
+class="small-caps">s</span><span 
+class="small-caps">o</span><span 
+class="small-caps">n</span></span>                 </div>
+<div  
+class="centerline">       <a 
+href="https://github.com/jboss-openshift/ce-testsuite.git/" class="url" ><span 
+class="cmtt-10">https://github.com/jboss-openshift/ce-testsuite.git/</span></a>       </div>
+   <h3 class="sectionHead"><span class="titlemark">  </span> <a 
+ id="x1-1000"></a>Overview</h3>
+<p>&#x00A0;&#x00A0;&#x00A0;            Leveraging container technology, Red Hat&#8217;s Cloud Enablment(CE) team
+has developed a test suite to accelerate and stabilize the development of its
+middleware products. It is now far easier than before to create, test, and deploy
+middleware applications on the cloud. To harness the full power of this test suite,
+users should understand its architecture. This document serves as a basic overview of
+that architecture and its underlying mechanics.
+   </p> 
+<div class="figure" align="center" display="inline-block"  
+>
+                                                                  
+
+                                                                  
+<a 
+ id="x1-1001r1"></a>
+                                                                  
+
+                                                                  
+<p>  <img 
+src="testsuite-figure0.svg" alt="PIC"  
+ />
+<br /> </p> 
+<div class="caption" 
+><span class="id">Figure&#x00A0;1: </span><span  
+class="content">Diagram of Platform Architecture</span></div><!--tex4ht:label?: x1-1001r1 -->
+                                                                  
+
+                                                                  
+   </div>
+   <h3 class="sectionHead"><span class="titlemark">   </span> <a 
+ id="x1-2000"></a>Container technology</h3>
+<p>In order for applications to run on cloud platforms such as OpenShift, they
+must be &#8221;containerized&#8221;. Moreover, these applications must be rewritten,
+generated, or transported into isolated programming environments known as
+containers.
+   </p> 
+
+   <h4 class="subsectionHead"><span class="titlemark">   </span> <a 
+ id="x1-3000"></a>Containers</h4>
+<p>A container is essentially an isolated userspace containing its own read/write
+filesystem, processes, network ports, and libraries. By relying on the functionality of
+their host&#8217;s kernel, containers save on resource costs, earning the trait of being
+&#8221;lightweight&#8221;. With little expense, containers can be instantiated, snapshotted, and
+destroyed quickly. Moreover, containers are ideal for developing applications. By
+providing applications with their own isolated programming environment, containers
+help users avoid problems like dependency and networking collisions. Accidentally
+downloading conflicting libraries or necromancing zombie network ports need not
+result in tedious environment debugging when developing in a container. Remember,
+containers are inexpensive, they can be destroyed and then recreated on a
+whim.
+   </p> 
+<div class="figure" align="center" display="inline-block"  
+>
+                                                                  
+
+                                                                  
+<a 
+ id="x1-3001r2"></a>
+                                                                  
+
+                                                                  
+<p>  <img 
+src="testsuite-figure1.svg" alt="PIC"  
+ />
+<br /> </p> 
+<div class="caption" 
+><span class="id">Figure&#x00A0;2: </span><span  
+class="content">Connecting to Containers from Host Machine</span></div><!--tex4ht:label?: x1-3001r2 -->
+                                                                  
+
+                                                                  
+   </div>
+   <h4 class="subsectionHead"><span class="titlemark">   </span> <a 
+ id="x1-4000"></a>Container Management</h4>
+<p>One can manage these userspaces using the container interface application known as
+Docker. Docker uses features built in the kernel to organize, isolate, create, save,
+and destroy containers. Friends running Docker on their machine can easily
+share their applications with other friends running Docker. These packaged
+applications not only deliver the same executing code of the developer but also the
+same environment that executing code was running in. All libraries and
+environmental variables are installed and ready to go. This way, more time can
+be spent creating the application as opposed to debugging environmental
+infestations.
+   </p> 
+<div class="figure" align="center" display="inline-block"  
+>
+                                                                  
+
+                                                                  
+<a 
+ id="x1-4001r3"></a>
+                                                                  
+
+                                                                  
+<p>  <img 
+src="testsuite-figure2.svg" alt="PIC"  
+ />
+<br /> </p> 
+<div class="caption" 
+><span class="id">Figure&#x00A0;3: </span><span  
+class="content">Sharing Containers with Friends</span></div><!--tex4ht:label?: x1-4001r3 -->
+                                                                  
+
+                                                                  
+   </div>
+<p>   In contrast to virtual machines, containers are classified under operating system
+level virtualization because they rely on the operating system resources of their host
+machine. Virtual machines rely on hardware virtualization which has a higher virtual
+memory management cost than operating system virtualization. Intuitively, this
+makes sense. It is more expensive to replicate the hardware and operating system for
+a virtual machine than it is to instantiate an isolated userspace for a container.
+Although containers provide less isolation than virtual machines, they consume
+significantly less resources. This is why containers are viewed as being &#8221;light&#8221;. In
+fact, it is even possible for a single physical machine to host hundreds containers
+simultaneously.
+</p> 
+<p>__________________________________________________________________ Work
+in Progress
+   </p> 
+
+   <h4 class="subsectionHead"><span class="titlemark">   </span> <a 
+ id="x1-5000"></a>Container Orchestration(WIP)</h4>
+   <div class="figure" align="center" display="inline-block"  
+>
+                                                                  
+
+                                                                  
+<a 
+ id="x1-5001r4"></a>
+                                                                  
+
+                                                                  
+<p>  <img 
+src="testsuite-figure3.svg" alt="PIC"  
+ />
+<br /> </p> 
+<div class="caption" 
+><span class="id">Figure&#x00A0;4: </span><span  
+class="content">OpenShift Platform</span></div><!--tex4ht:label?: x1-5001r4 -->
+                                                                  
+
+                                                                  
+   </div>
+<p>   Openshift organizes containers into groups specific for applications. These
+groupings of containers are known as pods. Most of the operations which Openshift
+will preform are upon pods for easier management and groupings. A pod must have
+at least one container and pods are the smallest unit with which openShift can
+manipulate. </p> 
+<div class="figure" align="center" display="inline-block"  
+>
+                                                                  
+
+                                                                  
+<a 
+ id="x1-5002r5"></a>
+                                                                  
+
+                                                                  
+<p>  <img 
+src="testsuite-figure4.svg" alt="PIC"  
+ />
+<br /> </p> 
+<div class="caption" 
+><span class="id">Figure&#x00A0;5: </span><span  
+class="content">OpenShift Platform, Pod Division</span></div><!--tex4ht:label?: x1-5002r5 -->
+                                                                  
+
+                                                                  
+   </div>
+<p>   Organize your pods into namespaces to help avoid appliction naming collisions by
+decreasing the scope of your applications </p> 
+<div class="figure" align="center" display="inline-block"  
+>
+                                                                  
+
+                                                                  
+<a 
+ id="x1-5003r6"></a>
+                                                                  
+
+                                                                  
+<p>  <img 
+src="testsuite-figure5.svg" alt="PIC"  
+ />
+<br /> </p> 
+<div class="caption" 
+><span class="id">Figure&#x00A0;6: </span><span  
+class="content">OpenShift Platform, Namespace Division</span></div><!--tex4ht:label?: x1-5003r6 -->
+                                                                  
+
+                                                                  
+   </div>
+   <h4 class="subsectionHead"><span class="titlemark">   </span> <a 
+ id="x1-6000"></a>Container Testing(WIP)</h4>
+<p>
+   </p> 
+
+   <h3 class="sectionHead"><span class="titlemark">   </span> <a 
+ id="x1-7000"></a>Middleware(WIP)</h3>
+    
+</body></html> 
+
+                                                                  
+
+                                                                  
+                                                                  
+
+
