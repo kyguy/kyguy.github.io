@@ -1,0 +1,1224 @@
+<?xml version="1.0" encoding="iso-8859-1" ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">  
+<!--http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd-->  
+<html xmlns="http://www.w3.org/1999/xhtml"  
+> 
+<head> <title></title> 
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" /> 
+<meta name="generator" content="TeX4ht (http://www.tug.org/tex4ht/)" /> 
+<meta name="originator" content="TeX4ht (http://www.tug.org/tex4ht/)" /> 
+<!-- xhtml,html --> 
+<meta name="src" content="hacking_openshift.tex" /> 
+<link rel="stylesheet" type="text/css" href="hacking_openshift.css" /> 
+</head><body 
+>
+   <div  
+class="centerline">                                  <span 
+class="cmcsc-10x-x-120">H<span 
+class="small-caps">a</span><span 
+class="small-caps">c</span><span 
+class="small-caps">k</span><span 
+class="small-caps">i</span><span 
+class="small-caps">n</span><span 
+class="small-caps">g</span> O<span 
+class="small-caps">p</span><span 
+class="small-caps">e</span><span 
+class="small-caps">n</span>S<span 
+class="small-caps">h</span><span 
+class="small-caps">i</span><span 
+class="small-caps">f</span><span 
+class="small-caps">t</span></span>                         </div>
+<div  
+class="centerline">                  <span 
+class="cmcsc-10">P<span 
+class="small-caps">r</span><span 
+class="small-caps">a</span><span 
+class="small-caps">c</span><span 
+class="small-caps">t</span><span 
+class="small-caps">i</span><span 
+class="small-caps">c</span><span 
+class="small-caps">u</span><span 
+class="small-caps">m</span> <span 
+class="small-caps">f</span><span 
+class="small-caps">o</span><span 
+class="small-caps">r</span> <span 
+class="small-caps">t</span><span 
+class="small-caps">h</span><span 
+class="small-caps">e</span> L<span 
+class="small-caps">a</span><span 
+class="small-caps">y</span><span 
+class="small-caps">p</span><span 
+class="small-caps">e</span><span 
+class="small-caps">r</span><span 
+class="small-caps">s</span><span 
+class="small-caps">o</span><span 
+class="small-caps">n</span></span>                   </div>
+<div  
+class="centerline">               <a 
+href="https://github.com/openshift/origin" class="url" ><span 
+class="cmtt-10">https://github.com/openshift/origin</span></a>               </div>
+   <h3 class="sectionHead"><span class="titlemark">  </span> <a 
+ id="x1-1000"></a>Overview</h3>
+<p>&#x00A0;&#x00A0;&#x00A0;            Although OpenShift is very promising as a distributed software
+platform, it is still difficult to install and configure. This guide will walk through how
+to install OpenShift Origin as a single node cluster by source.
+   </p> 
+<div class="figure" align="center" display="inline-block"  
+>
+                                                                  
+
+                                                                  
+                                                                  
+
+                                                                  
+<p>  <img 
+src="hacking_openshift-figure0.svg" alt="PIC"  
+ />
+                                                                  
+
+                                                                  
+   </p> 
+</div>
+<p>   Keep in mind,
+   </p> 
+<dl class="enumerate"><dt class="enumerate">
+(1) </dt><dd 
+class="enumerate">Installing OpenShift Origin via source
+   </dd><dt class="enumerate">
+(2) </dt><dd 
+class="enumerate">Target OS: Fedora 25</dd></dl>
+   <h3 class="sectionHead"><span class="titlemark">   </span> <a 
+ id="x1-2000"></a>Configuring Single Node</h3>
+<p>Install Dependencies </p> 
+<!--l. 123-->
+   <div class="lstlisting" id="listing-1"><span class="label"><a 
+ id="x1-2001r1"></a></span><span 
+class="cmtt-10">sudo</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">dnf</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">install</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">golang</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">golang</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">race</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">make</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">gcc</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">zip</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">mercurial</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">krb5</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">devel</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">bsdtar</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">bc</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">rsync</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">bind</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">utils</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">file</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">jq</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">tito</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">createrepo</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">openssl</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">gpgme</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">gpgme</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">devel</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">libassuan</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">libassuan</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">devel</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">git</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">docker</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">y</span>
+   </div>
+<p>   Prepare Docker </p> 
+<!--l. 129-->
+   <div class="lstlisting" id="listing-2"><span class="label"><a 
+ id="x1-2002r1"></a></span><span 
+class="cmtt-10">#</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">PREP</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">DOCKER</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2003r2"></a></span><span 
+class="cmtt-10">sudo</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">vi</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">etc</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">sysconfig</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">docker</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2004r3"></a></span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2005r4"></a></span><span 
+class="cmtt-10">#</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">Need</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">to</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">add</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">correct</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">registry</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">ips</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2006r5"></a></span><span 
+class="cmtt-10">#</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">----</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">add</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">lines</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">---</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2007r6"></a></span><span 
+class="cmtt-10">ADD_REGISTRY</span><span 
+class="cmtt-10">=&#8217;--</span><span 
+class="cmtt-10">add</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">registry</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">172.30.0.0/16&#8217;</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2008r7"></a></span><span 
+class="cmtt-10">INSECURE_REGISTRY</span><span 
+class="cmtt-10">=&#8217;--</span><span 
+class="cmtt-10">insecure</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">registry</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">172.30.0.0/16&#8217;</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2009r8"></a></span><span 
+class="cmtt-10">#</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">------------------</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2010r9"></a></span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2011r10"></a></span><span 
+class="cmtt-10">sudo</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">groupadd</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">docker</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2012r11"></a></span><span 
+class="cmtt-10">sudo</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">usermod</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">aG</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">docker</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">$USER</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2013r12"></a></span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2014r13"></a></span><span 
+class="cmtt-10">#</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">Reload</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">group</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">assignments</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2015r14"></a></span><span 
+class="cmtt-10">exec</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">su</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">l</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">$USER</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2016r15"></a></span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2017r16"></a></span><span 
+class="cmtt-10">#</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">Start</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">docker</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">daemon</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2018r17"></a></span><span 
+class="cmtt-10">systemctl</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">start</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">docker</span>
+   </div>
+<p>   Install Golang </p> 
+<!--l. 150-->
+   <div class="lstlisting" id="listing-3"><span class="label"><a 
+ id="x1-2019r1"></a></span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2020r2"></a></span><span 
+class="cmtt-10">#</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">Latest</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">golang</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">release</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">from</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">https</span><span 
+class="cmtt-10">://</span><span 
+class="cmtt-10">golang</span><span 
+class="cmtt-10">.</span><span 
+class="cmtt-10">org</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">dl</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2021r3"></a></span><span 
+class="cmtt-10">curl</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">sL</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">https</span><span 
+class="cmtt-10">://</span><span 
+class="cmtt-10">redirector</span><span 
+class="cmtt-10">.</span><span 
+class="cmtt-10">gvt1</span><span 
+class="cmtt-10">.</span><span 
+class="cmtt-10">com</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">edgedl</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">go</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">go1</span><span 
+class="cmtt-10">.9.2.</span><span 
+class="cmtt-10">linux</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">amd64</span><span 
+class="cmtt-10">.</span><span 
+class="cmtt-10">tar</span><span 
+class="cmtt-10">.</span><span 
+class="cmtt-10">gz</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">|</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">tar</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">C</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">usr</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">local</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">xz</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2022r4"></a></span><span 
+class="cmtt-10">sudo</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">mv</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">go</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">usr</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">local</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2023r5"></a></span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2024r6"></a></span><span 
+class="cmtt-10">mkdir</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">$HOME</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">go</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2025r7"></a></span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2026r8"></a></span><span 
+class="cmtt-10">#</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">vi</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">~/.</span><span 
+class="cmtt-10">bashrc</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2027r9"></a></span><span 
+class="cmtt-10">#------</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">Append</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">to</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">following</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">------------</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2028r10"></a></span><span 
+class="cmtt-10">export</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">GOPATH</span><span 
+class="cmtt-10">=</span><span 
+class="cmtt-10">$HOME</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">go</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2029r11"></a></span><span 
+class="cmtt-10">export</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">OS_OUTPUT_GOPATH</span><span 
+class="cmtt-10">=1</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2030r12"></a></span><span 
+class="cmtt-10">export</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">GOROOT</span><span 
+class="cmtt-10">=/</span><span 
+class="cmtt-10">usr</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">local</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">go</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2031r13"></a></span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2032r14"></a></span><span 
+class="cmtt-10">#</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">OpenShift</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">tools</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2033r15"></a></span><span 
+class="cmtt-10">export</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">OS_TOOLS</span><span 
+class="cmtt-10">=</span><span 
+class="cmtt-10">$GOPATH</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">src</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">github</span><span 
+class="cmtt-10">.</span><span 
+class="cmtt-10">com</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">openshift</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">origin</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">_output</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">local</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">bin</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">linux</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">amd64</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2034r16"></a></span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2035r17"></a></span><span 
+class="cmtt-10">export</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">PATH</span><span 
+class="cmtt-10">=</span><span 
+class="cmtt-10">$PATH</span><span 
+class="cmtt-10">:</span><span 
+class="cmtt-10">$GOPATH</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">bin</span><span 
+class="cmtt-10">:</span><span 
+class="cmtt-10">$GOROOT</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">bin</span><span 
+class="cmtt-10">:</span><span 
+class="cmtt-10">$OS_TOOLS</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2036r18"></a></span><span 
+class="cmtt-10">#---------------------------------------</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2037r19"></a></span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2038r20"></a></span><span 
+class="cmtt-10">source</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">~/.</span><span 
+class="cmtt-10">bashrc</span>
+   </div>
+<p>   Compile OpenShift Origin source </p> 
+<!--l. 174-->
+   <div class="lstlisting" id="listing-4"><span class="label"><a 
+ id="x1-2039r1"></a></span><span 
+class="cmtt-10">mkdir</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">p</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">$GOPATH</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">src</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">github</span><span 
+class="cmtt-10">.</span><span 
+class="cmtt-10">com</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">openshift</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2040r2"></a></span><span 
+class="cmtt-10">cd</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">$GOPATH</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">src</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">github</span><span 
+class="cmtt-10">.</span><span 
+class="cmtt-10">com</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">openshift</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2041r3"></a></span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2042r4"></a></span><span 
+class="cmtt-10">git</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">clone</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">https</span><span 
+class="cmtt-10">://</span><span 
+class="cmtt-10">github</span><span 
+class="cmtt-10">.</span><span 
+class="cmtt-10">com</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">openshift</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">origin</span><span 
+class="cmtt-10">.</span><span 
+class="cmtt-10">git</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2043r5"></a></span><span 
+class="cmtt-10">cd</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">origin</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2044r6"></a></span><span 
+class="cmtt-10">git</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">checkout</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">tags</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">v3</span><span 
+class="cmtt-10">.7.0-</span><span 
+class="cmtt-10">alpha</span><span 
+class="cmtt-10">.1</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2045r7"></a></span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2046r8"></a></span><span 
+class="cmtt-10">#</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">Compile</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">OpenShift</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">Server</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2047r9"></a></span><span 
+class="cmtt-10">make</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">build</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">WHAT</span><span 
+class="cmtt-10">=</span><span 
+class="cmtt-10">cmd</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">openshift</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">GOFLAGS</span><span 
+class="cmtt-10">=</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">ldflags</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">"-</span><span 
+class="cmtt-10">w</span><span 
+class="cmtt-10">"</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2048r10"></a></span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2049r11"></a></span><span 
+class="cmtt-10">#</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">Compile</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">OpenShift</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">Client</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2050r12"></a></span><span 
+class="cmtt-10">make</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">build</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">WHAT</span><span 
+class="cmtt-10">=</span><span 
+class="cmtt-10">cmd</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">oc</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">GOFLAGS</span><span 
+class="cmtt-10">=</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">ldflags</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">"-</span><span 
+class="cmtt-10">w</span><span 
+class="cmtt-10">"</span>
+   </div>
+<p>   Expose Firewall on Host Machine
+   </p> 
+<!--l. 191-->
+   <div class="lstlisting" id="listing-5"><span class="label"><a 
+ id="x1-2051r1"></a></span><span 
+class="cmtt-10">#</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">Expose</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">ports</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">necessary</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">for</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">OpenShift</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2052r2"></a></span><span 
+class="cmtt-10">firewall</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">cmd</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">--</span><span 
+class="cmtt-10">permanent</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">--</span><span 
+class="cmtt-10">new</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">zone</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">dockerc</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2053r3"></a></span><span 
+class="cmtt-10">firewall</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">cmd</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">--</span><span 
+class="cmtt-10">permanent</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">--</span><span 
+class="cmtt-10">zone</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">dockerc</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">--</span><span 
+class="cmtt-10">add</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">source</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">172.17.0.0/16</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2054r4"></a></span><span 
+class="cmtt-10">firewall</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">cmd</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">--</span><span 
+class="cmtt-10">permanent</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">--</span><span 
+class="cmtt-10">zone</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">dockerc</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">--</span><span 
+class="cmtt-10">add</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">port</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">8443/</span><span 
+class="cmtt-10">tcp</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2055r5"></a></span><span 
+class="cmtt-10">firewall</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">cmd</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">--</span><span 
+class="cmtt-10">permanent</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">--</span><span 
+class="cmtt-10">zone</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">dockerc</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">--</span><span 
+class="cmtt-10">add</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">port</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">53/</span><span 
+class="cmtt-10">udp</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2056r6"></a></span><span 
+class="cmtt-10">firewall</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">cmd</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">--</span><span 
+class="cmtt-10">permanent</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">--</span><span 
+class="cmtt-10">zone</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">dockerc</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">--</span><span 
+class="cmtt-10">add</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">port</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">8053/</span><span 
+class="cmtt-10">udp</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-2057r7"></a></span><span 
+class="cmtt-10">firewall</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">cmd</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">--</span><span 
+class="cmtt-10">reload</span>
+   </div>
+<p>
+   </p> 
+
+   <h3 class="sectionHead"><span class="titlemark">  </span> <a 
+ id="x1-3000"></a>Starting Single Node Cluster</h3>
+<p>Remember, this configuration is for a basic single node OpenShift instance
+   </p> 
+<!--l. 204-->
+   <div class="lstlisting" id="listing-6"><span class="label"><a 
+ id="x1-3001r1"></a></span><span 
+class="cmtt-10">sudo</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">./</span><span 
+class="cmtt-10">openshift</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">start</span>
+   </div>
+<p>   will give:
+   </p> 
+<div class="figure" align="center" display="inline-block"  
+>
+                                                                  
+
+                                                                  
+                                                                  
+
+                                                                  
+<p>  <img 
+src="hacking_openshift-figure1.svg" alt="PIC"  
+ />
+                                                                  
+
+                                                                  
+   </p> 
+</div>
+<p>   Important to Configure OpenShift before doing anything else </p> 
+<!--l. 244-->
+   <div class="lstlisting" id="listing-7"><span class="label"><a 
+ id="x1-3002r1"></a></span><span 
+class="cmtt-10">#</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">Compiled</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">files</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">are</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">kept</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">in</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">the</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">following</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">directory</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-3003r2"></a></span><span 
+class="cmtt-10">cd</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">_output</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">local</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">bin</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">linux</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">amd64</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-3004r3"></a></span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-3005r4"></a></span><span 
+class="cmtt-10">sudo</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">chmod</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">777</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">openshift</span><span 
+class="cmtt-10">.</span><span 
+class="cmtt-10">local</span><span 
+class="cmtt-10">.</span><span 
+class="cmtt-10">config</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">master</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">admin</span><span 
+class="cmtt-10">.</span><span 
+class="cmtt-10">kubeconfig</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-3006r5"></a></span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-3007r6"></a></span><span 
+class="cmtt-10">./</span><span 
+class="cmtt-10">oc</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">adm</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">registry</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">n</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">default</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">--</span><span 
+class="cmtt-10">config</span><span 
+class="cmtt-10">=</span><span 
+class="cmtt-10">openshift</span><span 
+class="cmtt-10">.</span><span 
+class="cmtt-10">local</span><span 
+class="cmtt-10">.</span><span 
+class="cmtt-10">config</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">master</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">admin</span><span 
+class="cmtt-10">.</span><span 
+class="cmtt-10">kubeconfig</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">--</span><span 
+class="cmtt-10">service</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">account</span><span 
+class="cmtt-10">=</span><span 
+class="cmtt-10">registry</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-3008r7"></a></span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-3009r8"></a></span><span 
+class="cmtt-10">./</span><span 
+class="cmtt-10">oc</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">adm</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">policy</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">add</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">scc</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">to</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">user</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">hostnetwork</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">z</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">router</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">--</span><span 
+class="cmtt-10">config</span><span 
+class="cmtt-10">=</span><span 
+class="cmtt-10">openshift</span><span 
+class="cmtt-10">.</span><span 
+class="cmtt-10">local</span><span 
+class="cmtt-10">.</span><span 
+class="cmtt-10">config</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">master</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">admin</span><span 
+class="cmtt-10">.</span><span 
+class="cmtt-10">kubeconfig</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-3010r9"></a></span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-3011r10"></a></span><span 
+class="cmtt-10">./</span><span 
+class="cmtt-10">oc</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">adm</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">router</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">--</span><span 
+class="cmtt-10">replicas</span><span 
+class="cmtt-10">=1</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">--</span><span 
+class="cmtt-10">config</span><span 
+class="cmtt-10">=</span><span 
+class="cmtt-10">openshift</span><span 
+class="cmtt-10">.</span><span 
+class="cmtt-10">local</span><span 
+class="cmtt-10">.</span><span 
+class="cmtt-10">config</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">master</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">admin</span><span 
+class="cmtt-10">.</span><span 
+class="cmtt-10">kubeconfig</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">--</span><span 
+class="cmtt-10">service</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">account</span><span 
+class="cmtt-10">=</span><span 
+class="cmtt-10">router</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-3012r11"></a></span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-3013r12"></a></span><span 
+class="cmtt-10">./</span><span 
+class="cmtt-10">oc</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">adm</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">policy</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">add</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">cluster</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">role</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">to</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">user</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">cluster</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">admin</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">admin</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">--</span><span 
+class="cmtt-10">config</span><span 
+class="cmtt-10">=</span><span 
+class="cmtt-10">openshift</span><span 
+class="cmtt-10">.</span><span 
+class="cmtt-10">local</span><span 
+class="cmtt-10">.</span><span 
+class="cmtt-10">config</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">master</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">admin</span><span 
+class="cmtt-10">.</span><span 
+class="cmtt-10">kubeconfig</span>
+   </div>
+   <div class="figure" align="center" display="inline-block"  
+>
+                                                                  
+
+                                                                  
+                                                                  
+
+                                                                  
+<p>  <img 
+src="hacking_openshift-figure2.svg" alt="PIC"  
+ />
+                                                                  
+
+                                                                  
+   </p> 
+</div>
+   <!--l. 316-->
+   <div class="lstlisting" id="listing-8"><span class="label"><a 
+ id="x1-3014r1"></a></span><span 
+class="cmtt-10">#</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">Login</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">as</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">user</span><span 
+class="cmtt-10">:</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">admin</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">password</span><span 
+class="cmtt-10">:</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">admin</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-3015r2"></a></span><span 
+class="cmtt-10">oc</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">login</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">https</span><span 
+class="cmtt-10">://127.0.0.1:8443</span>
+   </div>
+   <h3 class="sectionHead"><span class="titlemark">  </span> <a 
+ id="x1-4000"></a>Optional Additions to Cluster</h3>
+<p>
+   </p> 
+
+   <h4 class="subsectionHead"><span class="titlemark">   </span> <a 
+ id="x1-5000"></a>Adding local Persistent Volumes</h4>
+<p>Setting up Network File System </p> 
+<!--l. 327-->
+   <div class="lstlisting" id="listing-9"><span class="label"><a 
+ id="x1-5001r1"></a></span>#&#x00A0;Credit:&#x00A0;https://github.com/openshift/origin/blob/master/examples/wordpress/nfs/README.md&#x00A0;<br /><span class="label"><a 
+ id="x1-5002r2"></a></span>#&#x00A0;the&#x00A0;directories&#x00A0;in&#x00A0;this&#x00A0;example&#x00A0;can&#x00A0;grow&#x00A0;unbounded&#x00A0;<br /><span class="label"><a 
+ id="x1-5003r3"></a></span>#&#x00A0;use&#x00A0;disk&#x00A0;partitions&#x00A0;of&#x00A0;specific&#x00A0;sizes&#x00A0;to&#x00A0;enforce&#x00A0;storage&#x00A0;quotas&#x00A0;<br /><span class="label"><a 
+ id="x1-5004r4"></a></span>mkdir&#x00A0;<span 
+class="cmsy-10">-</span>p&#x00A0;/home/data/pv0001&#x00A0;<br /><span class="label"><a 
+ id="x1-5005r5"></a></span>mkdir&#x00A0;<span 
+class="cmsy-10">-</span>p&#x00A0;/home/data/pv0002&#x00A0;<br /><span class="label"><a 
+ id="x1-5006r6"></a></span>&#x00A0;<br /><span class="label"><a 
+ id="x1-5007r7"></a></span>#&#x00A0;security&#x00A0;needs&#x00A0;to&#x00A0;be&#x00A0;permissive&#x00A0;currently,&#x00A0;but&#x00A0;the&#x00A0;export&#x00A0;will&#x00A0;soon&#x00A0;be&#x00A0;restricted&#x00A0;<br /><span class="label"><a 
+ id="x1-5008r8"></a></span>#&#x00A0;to&#x00A0;the&#x00A0;same&#x00A0;UID/GID&#x00A0;that&#x00A0;wrote&#x00A0;the&#x00A0;data&#x00A0;<br /><span class="label"><a 
+ id="x1-5009r9"></a></span>chmod&#x00A0;<span 
+class="cmsy-10">-</span>R&#x00A0;777&#x00A0;/home/data/&#x00A0;<br /><span class="label"><a 
+ id="x1-5010r10"></a></span>&#x00A0;<br /><span class="label"><a 
+ id="x1-5011r11"></a></span>#&#x00A0;Add&#x00A0;to&#x00A0;/etc/exports&#x00A0;<br /><span class="label"><a 
+ id="x1-5012r12"></a></span>/home/data/pv0001&#x00A0;<span 
+class="cmsy-10">*</span>(rw,sync)&#x00A0;<br /><span class="label"><a 
+ id="x1-5013r13"></a></span>/home/data/pv0002&#x00A0;<span 
+class="cmsy-10">*</span>(rw,sync)&#x00A0;<br /><span class="label"><a 
+ id="x1-5014r14"></a></span>&#x00A0;<br /><span class="label"><a 
+ id="x1-5015r15"></a></span>#&#x00A0;Enable&#x00A0;the&#x00A0;new&#x00A0;exports&#x00A0;without&#x00A0;bouncing&#x00A0;the&#x00A0;NFS&#x00A0;service&#x00A0;<br /><span class="label"><a 
+ id="x1-5016r16"></a></span>exportfs&#x00A0;<span 
+class="cmsy-10">-</span>a&#x00A0;<br /><span class="label"><a 
+ id="x1-5017r17"></a></span>&#x00A0;<br /><span class="label"><a 
+ id="x1-5018r18"></a></span>#&#x00A0;<span 
+class="cmsy-10">-</span>P&#x00A0;makes&#x00A0;the&#x00A0;bool&#x00A0;persistent&#x00A0;between&#x00A0;reboots.&#x00A0;<br /><span class="label"><a 
+ id="x1-5019r19"></a></span>$&#x00A0;setsebool&#x00A0;<span 
+class="cmsy-10">-</span>P&#x00A0;virt_use_nfs&#x00A0;1
+   
+   </div>
+<p>   Create Persistent volume </p> 
+<!--l. 350-->
+   <div class="lstlisting" id="listing-10"><span class="label"><a 
+ id="x1-5020r1"></a></span><span 
+class="cmtt-10">vi</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">pv</span><span 
+class="cmtt-10">-1.</span><span 
+class="cmtt-10">yaml</span>
+   </div>
+   <!--l. 354-->
+   <div class="lstlisting" id="listing-11"><span class="label"><a 
+ id="x1-5021r1"></a></span><span 
+class="cmtt-10">apiVersion</span><span 
+class="cmtt-10">:</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">v1</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-5022r2"></a></span><span 
+class="cmtt-10">kind</span><span 
+class="cmtt-10">:</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">PersistentVolume</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-5023r3"></a></span><span 
+class="cmtt-10">metadata</span><span 
+class="cmtt-10">:</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-5024r4"></a></span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">name</span><span 
+class="cmtt-10">:</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">pv0001</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-5025r5"></a></span><span 
+class="cmtt-10">spec</span><span 
+class="cmtt-10">:</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-5026r6"></a></span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">capacity</span><span 
+class="cmtt-10">:</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-5027r7"></a></span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">storage</span><span 
+class="cmtt-10">:</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">1</span><span 
+class="cmtt-10">Gi</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-5028r8"></a></span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">accessModes</span><span 
+class="cmtt-10">:</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-5029r9"></a></span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">ReadWriteOnce</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-5030r10"></a></span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">ReadWriteMany</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-5031r11"></a></span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">persistentVolumeReclaimPolicy</span><span 
+class="cmtt-10">:</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">Recycle</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-5032r12"></a></span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">nfs</span><span 
+class="cmtt-10">:</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-5033r13"></a></span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">server</span><span 
+class="cmtt-10">:</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">localhost</span><span 
+class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-5034r14"></a></span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">path</span><span 
+class="cmtt-10">:</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">home</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">data</span><span 
+class="cmtt-10">/</span><span 
+class="cmtt-10">pv0001</span>
+   </div>
+   <!--l. 371-->
+   <div class="lstlisting" id="listing-12"><span class="label"><a 
+ id="x1-5035r1"></a></span><span 
+class="cmtt-10">oc</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">create</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">-</span><span 
+class="cmtt-10">f</span><span 
+class="cmtt-10">&#x00A0;</span><span 
+class="cmtt-10">pv</span><span 
+class="cmtt-10">-1.</span><span 
+class="cmtt-10">yaml</span>
+   </div>
+    
+</body></html> 
+
+                                                                  
+
+                                                                  
+                                                                  
+
+

@@ -1,0 +1,345 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% openshift.tex
+% 
+% Latex source to be converted to HTML by tex4ht
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass{article}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PREAMBLE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Import common configurations and custom functions
+\input{../config}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% DOCUMENT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+\centerline{\sc \large OpenShift}
+\centerline{\sc Architecture for the Layperson }
+\centerline{\url{https://github.com/openshift/origin}}
+
+\vspace{1pc}
+
+\section{Overview}
+\hspace{3pc} Openshift is a container platform which facilitates the development and hosting of software applications across
+distributed systems. Whether these distributed systems be physical hosts, virtual machines or any combination of 
+both, OpenShift reaps the benefits of available computing resources while abstracting the unattractive details 
+of managing it. 
+
+\begin{figure}
+\begin{tikzpicture}[node distance = 1cm and 0cm]
+  \tikzstyle{HYP_COLOR} = [fill=gray!50!black]
+  
+  % OpenShift layer
+  \openshift{OS0}{3.2}{}{}
+  %----------------------------------------------%
+  % HOST 2
+  \openshift{OS1}{3.8}{above left = -1.5cm and 2.5cm of OS0}{}
+  \node[USR_COLOR, layer,minimum height = 2.5cm,
+   label={[label distance=-0.55cm]270:\color{white}Userspace}, above = 0.45 cm  of LOCATION ] (OS1_USR) {};
+  \tikzstyle{mw} = [minimum width= 3cm]
+  \tikzstyle{mh} = [minimum width=0.25cm]
+  \node[box, HYP_COLOR, mw, above=0.5cm of OS1_USR.south] (OS1_HYPER) {\footnotesize Hypervisor};
+  \node[box, KRN_COLOR, mw, above= 0cm and 0cm of OS1_HYPER] (OS1_KRN) {\footnotesize Kernel};
+  \node[box,USR_COLOR, draw=white, mw, minimum height = 1cm, above= 0cm and 0cm of OS1_KRN,
+    label={[label distance=-0.55cm]270:\color{white}\footnotesize Userspace}] (OS1_USR2) {};
+  \node[OS_LAYER, minimum width = 1.5 , above = 0.5cm and 0.0cm of OS1_USR2.south] (OS1_label2) {\scriptsize OpenShift};
+
+  %----------------------------------------------%
+  %\openshift{OS2}{3.2}{right = 0cm and 2cm of OS0}{}
+ 
+  %----------------------------------------------%
+  % HOST 3
+  \openshift{OS2}{3.8}{ above right = -1.5cm and 2.5cm of OS0}{}
+  \node[USR_COLOR, layer,minimum height = 2.5cm,
+   label={[label distance=-0.55cm]270:\color{white}Userspace}, above = 0.45 cm  of LOCATION ] (OS2_USR) {};
+  
+  \tikzstyle{mw} = [minimum width=1.85cm]
+  \tikzstyle{mh} = [minimum width=0.25cm]
+  
+  \node[OS_LAYER, mw, above left = 0.5cm and 0.0cm of OS2_USR.south] (\id_label) {\footnotesize OpenShift};
+  \node[box, HYP_COLOR, mw, right= 0cm and 0cm of OS2_label] (HYPER) {\footnotesize Hypervisor};
+  \node[box, KRN_COLOR, mw, above= 0cm and 0cm of HYPER] (OS2_KRN) {\footnotesize Kernel};
+  \node[box,USR_COLOR, draw=white, mw, minimum height = 1cm, above= 0cm and 0cm of OS2_KRN,
+    label={[label distance=-0.55cm]270:\color{white}\footnotesize Userspace}] (OS2_USR2) {};
+  \node[OS_LAYER, minimum width = 0.5 , above = 0.5cm and 0.0cm of OS2_USR2.south] (OS2_label2) {\scriptsize OpenShift};
+  %-----------------------------------------------%
+  %\node[blue, rectangle, right= of OS0] (TEST) {};
+
+  %\node[] at (0,0) {0,0};
+
+  \openshift{OS3}{3.2}{right = 7cm of OS0}{}   
+
+  \project{PRJ1}{0.5}{8}{4}{above left= 2.75cm and 1.50cm of OS0}
+  \project{PRJ1}{0.5}{8}{4}{above left= 2.75cm and 1.50cm of OS0}
+  \project{PRJ2}{0.5}{4}{2}{above left= 2.75cm and 1.50cm of OS3}
+  \project{PRJ2}{0.5}{4}{2}{above left= 2.75cm and 1.50cm of OS3}
+  %\project{PRJ2}{0.5}{6}{3}{above right= 2.5cm and 0.0cm of OS0}
+
+  % Connector nodes
+  \node[above = 1.45cm of OS2_label2] (PRJ1P3_CONN) {};
+  \node[below = 0.75cm of PRJ1P1]     (PRJ1P1_CONN) {};
+  \node[left  = 1.00cm of PRJ1P0]     (PRJ1P0_CONN) {};
+  \node[above = 0.50cm of PRJ1P2]     (PRJ1P2_CONN) {};
+  \node[above right = 4.50cm and 0.5cm of OS3.north]        (PRJ1P2_CONN2) {};
+  \node[above = 3.15cm of OS3.north]  (PRJ2P1_CONN) {};
+  \node[above = 2.00cm of OS0]        (PRJ2P0_CONN) {};
+  \node[below = 0.25cm of PRJ2P0]     (PRJ2P0_CONN2) {};
+
+  \tikzstyle{link} = [-, thick, opacity=0.3]
+
+  \path[link, to path={|- (\tikztotarget)}]
+    (PRJ1P3.east) edge (PRJ1P3_CONN.center)
+    (PRJ1P3_CONN.center) edge (OS2_label2.north)
+    (PRJ1P1.south) edge (PRJ1P1_CONN.center)
+    (PRJ1P1_CONN.center) edge (OS1_label2.east)
+    (PRJ1P0.west) edge (PRJ1P0_CONN.center)
+    (PRJ1P0_CONN.center) edge (OS1_label2.north)
+    (PRJ1P2.north) edge (PRJ1P2_CONN.center)
+    (PRJ1P2_CONN.center) edge (PRJ1P2_CONN2.center)
+    (PRJ1P2_CONN2.center) edge (OS3_label.north east)
+    (OS0_label.north) edge (PRJ2P0_CONN.center)
+    (PRJ2P0_CONN.center) edge (PRJ2P0_CONN2.center)
+    (PRJ2P0.south) edge (PRJ2P0_CONN2.center)
+    (OS3_label.north) edge (PRJ2P1_CONN.center)
+    (PRJ2P1.east) edge (PRJ2P1_CONN.center);    
+
+  \node[below = 0.50cm of PRJ2P1] (POD_LABEL)  {Pod};
+  \path[->] (POD_LABEL) edge (PRJ2P1);
+
+  \node[above = 0.00cm of PRJ1] (PRJ_LABEL)  {Project};
+  %\path[->] (PRJ_LABEL) edge (PRJ1);
+
+\end{tikzpicture}
+\end{figure}
+
+%Development within the OpenShift environment begins and ends with virtual computer hosts known as pods. This is where
+%programmers interact with and host code. The computing resources backing these pods is determined by the OpenShift cluster.
+%Pods are indivisible and must reside on one machine; however, this is not the case with groups of pods known as a project.
+
+\section{Core Components}
+Within the OpenShift environment, programmers isolate their programs into virtual instances known
+as pods. Pods emulate the behavoir of a programmer's physical or virtual host by leveraging aspects 
+of the host's kernel. A pod consists of a group of processes that can share disk space. A pod is 
+assigned its own ip address. 
+%The whole purpose of container platforms is to relief programmers of mundane task of environmental upkeep. 
+%\iffalse
+%Distributed openshift and pod diagram
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Core Components
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}
+\begin{tikzpicture}[node distance = 1cm and 0cm]
+  % OpenShift layer
+  \tikzstyle{OS_LAYER} = [app_stack, OS_COLOR, minimum width = 14cm, minimum height = 6.0cm]
+  \tikzstyle{image} = [c_full, fill=white!20, opacity=0.5]
+  \tikzstyle{mw} = [minimum width=15.0cm]
+  \tikzstyle{mh} = [minimum height=7.5cm]
+  \tikzstyle{link} = [-, thick, opacity=0.3]
+
+  \node[USR_LAYER, mw, mh] (USR) {};
+  \node[KRN_LAYER, mw, below = 0cm and 0cm of USR.south] (KRN) {Kernel};
+  \node[HW_LAYER,  mw, minimum height = 2cm, below = 0cm and 0cm of KRN.north, anchor=north] (HW) {Hardware};
+
+  \node[OS_LAYER, above=1cm of USR.south] (OS) {\Large \color{white} OpenShift};
+  \node [below = 0cm of HW.south] (HM) {Physical Machine};
+  \path[->, thin, to path={-| (\tikztotarget)}]
+    (HM.west) edge (HW.south west)
+    (HM.east) edge (HW.south east);
+
+  \node[box, minimum height = 1.75cm, minimum width = 5.5cm, DK_COLOR, below left = 1.0cm and 1.15cm of OS.center,
+       label={[label distance=-0.65cm]270:Container Engine}] (DK) {};
+  \containers{0}{8}{8}{above left= 0.75cm and 2cm of DK.south};
+  
+  \project{PRJ0}{0.5}{8}{4}{above left = 2.00cm and 0.0cm of DK}
+  \project{PRJ0}{0.5}{8}{4}{above left = 2.00cm and 0.0cm of DK}
+  \node[below = 0.0cm of PRJ0] (PRJ0_LABEL) {Project};
+
+  \node[above right= -0.25cm and 0.40cm of PRJ0P3] (POD_LABEL) {Pod};
+  \path[link, ->] (POD_LABEL) edge (PRJ0P3);
+
+  \xdef\dis{0.75}
+  \node[below = 2 cm of PRJ0P0C00] (CONN0_0) {};
+  \node[below = 1.75 cm of PRJ0P0C01] (CONN1_0) {};
+  \node[below = 1.5 cm of PRJ0P1C00] (CONN2_0) {};
+  \node[below = 2 cm of PRJ0P1C01] (CONN3_0) {};
+  \node[below = 2 cm of PRJ0P2C00] (CONN4_0) {};
+  \node[below = 1.75 cm of PRJ0P2C01] (CONN5_0) {};
+  \node[below = 1.75 cm of PRJ0P3C00] (CONN6_0) {};
+  \node[below = 2 cm of PRJ0P3C01] (CONN7_0) {};
+
+  \path[link, to path={|- (\tikztotarget)}]
+    (C0_0.north) edge (CONN0_0.center)
+    (C1_0.north) edge (CONN1_0.center)
+    (C2_0.north) edge (CONN2_0.center)
+    (C3_0.north) edge (CONN3_0.center)
+    (C4_0.north) edge (CONN4_0.center)
+    (C5_0.north) edge (CONN5_0.center)
+    (C6_0.north) edge (CONN6_0.center)
+    (C7_0.north) edge (CONN7_0.center);
+
+  \path[link, ->]
+    (CONN0_0.center) edge (PRJ0P0C00.south)
+    (CONN1_0.center) edge (PRJ0P0C01.south)
+    (CONN2_0.center) edge (PRJ0P1C00.south)
+    (CONN3_0.center) edge (PRJ0P1C01.south)
+    (CONN4_0.center) edge (PRJ0P2C00.south)
+    (CONN5_0.center) edge (PRJ0P2C01.south)
+    (CONN6_0.center) edge (PRJ0P3C00.south)
+    (CONN7_0.center) edge (PRJ0P3C01.south);
+
+
+  %\path[link, ->] (PRJ0P3.east) edge (P0);
+  \node[right = 0.0cm and 3.55cm of PRJ0P3.10] (CONN0_P3) {};
+  \node[right = 0.0cm and 3.25cm of PRJ0P3.350](CONN1_P3) {};
+
+  \tikzstyle{d_seg_color} = [fill=black!10]
+  \tikzstyle{d_seg} = [cylinder, d_seg_color,draw, shape border rotate=90, thin, minimum width = 1.7cm, minimum height = 1.5cm]
+
+  \node[d_seg, right= 0cm and 2cm of HW.center] (D0) {};
+  \node[below= 0cm of D0.center ] (D0_label) {Disk};
+
+  \tikzstyle{link} = [-, thick, white, opacity=0.9]
+  \path[link]  (PRJ0P3.10) edge (CONN0_P3.center);
+  \path[link, ->]  (CONN0_P3.center) edge (D0.80);
+  \path[link, <-]  (PRJ0P3.350) edge (CONN1_P3.center);
+  \path[link]  (CONN1_P3.center) edge (D0.100);
+
+  \tikzstyle{port} = [rectangle, minimum height = 0.05cm, minimum width = 4cm, fill=white]
+  %\node[port, right= 0.0cm and 0cm of PRJ0P3.east]  (PORT0) {\tiny 101010101010101011010101010101010};
+  \node[port, rotate=90, minimum width = 1cm, above= 0.0cm and 1cm of PRJ0P0.north, anchor=west] (PORT0) {\tiny 010101010};
+  \node[port, rotate=90, minimum width = 1cm, above= 0.0cm and 1cm of PRJ0P1.north, anchor=west] (PORT1) {\tiny 010101010};
+  \node[port, rotate=90, minimum width = 1cm, above= 0.0cm and 1cm of PRJ0P2.north, anchor=west] (PORT2) {\tiny 010101010};
+  \node[port, rotate=90, minimum width = 1cm, above= 0.0cm and 1cm of PRJ0P3.north, anchor=west] (PORT3) {\tiny 010101010};
+  %\node[above right = 0cm and -0.85cm of PORT0] (PORT0_LABEL) {\scriptsize Port};
+  \node[rotate=90, above right = -0.7cm and 0.0cm of PORT0] (PORT0_LABEL) {\scriptsize Port};
+  \node[rotate=90, above right = -0.7cm and 0.0cm of PORT1] (PORT1_LABEL) {\scriptsize Port};
+  \node[rotate=90, above right = -0.7cm and 0.0cm of PORT2] (PORT1_LABEL) {\scriptsize Port};
+  \node[rotate=90, above right = -0.7cm and 0.0cm of PORT3] (PORT3_LABEL) {\scriptsize Port};
+\end{tikzpicture}
+\caption{Core Components}
+\end{figure}
+
+%\section{Images}
+%The most important component of container technology is what is known as an container image. If a container application is a cake 
+%then the image is the recipe. One image can be instantiated multiple times make identical container applications just as a recipe 
+%can be followed to make as many cakes as a programmer desires.
+
+%\begin{figure}
+%\begin{tikzpicture}
+%  \cube{1}{2}{black}{};
+%\end{tikzpicture}
+%\end{figure}
+
+%OpenShift keeps all of its recipes in a recipe cubby know as a registry. When a programmer wants a head start on their application,
+%or write a new recipe, a image is chosen as the baseline
+
+%- Add a section on the catalogue \n
+%- Diff between OS image and docker image \n
+%- How images are created \n
+%- imagestreams \n
+%- section on template \n
+%- fix up cube code
+
+%\section{TODO}
+%\begin{enumerate}
+%  \item Pods and Services
+%  \item Builds and Image Streams
+%  \item Container Registry
+%  \item Web console
+%  \item Builds and Image Streams
+%  \item Deployments
+%  \item Templates
+%\end{enumerate}
+
+\begin{figure}
+\begin{tikzpicture}[node distance = 1cm and 0cm]
+  % OpenShift layer
+  \tikzstyle{OS_LAYER} = [app_stack, OS_COLOR, minimum width = 14cm, minimum height = 6.5cm]
+  \tikzstyle{image} = [c_full, fill=white!20, opacity=0.5]
+  \tikzstyle{mw} = [minimum width=15.0cm]
+  \tikzstyle{mh} = [minimum height=8.0cm]
+
+  \node[USR_LAYER, mw, mh] (USR) {};
+  \node[KRN_LAYER, mw, below = 0cm and 0cm of USR.south] (KRN) {Kernel};
+  \node[HW_LAYER,  mw, below = 0cm and 0cm of KRN.north, anchor=north] (HW) {Hardware};
+
+  %\node[HM_LAYER, mw] (HM_1) {Host Machine 1};
+  %\node[HM_LAYER, mw, right=of HM_1] (HM_2) {Host Machine 2};
+  %\node[HM_LAYER, mw, right=of HM_2] (HM_3) {Host Machine 3};
+  \node[OS_LAYER, above=1cm of USR.south] (OS) {\Large \color{white} OpenShift};
+  %\node[HM_LAYER, mw] (MB_1) {Host Machine 1};
+
+  \project{PRJ0}{0.5}{4}{2}{above left = 0.75cm and 6.5cm of OS.south}
+
+  %        id size rows cols location
+  \registry{R0}{0.5}{3}{4}{above left= 0.35cm and 2.5cm of OS.south} %location  
+  \path[->, opacity=0.5, thick] (PRJ0P1) edge (R0C10_west);
+
+  \router{ROUTE0}{1.75}{above= 1.0cm of PRJ0P0}
+  \path[->, thick] (PRJ0P0) edge (ROUTE0);
+
+  \cube{C1}{0.5}{black}{above= 1cm and 0.0 cm of R0C20_north }; % location
+  \path[->, thick, opacity=0.5] (R0C20_north) edge (C1_south);
+
+  \project{PRJ1}{0.5}{1}{1}{above left = 1cm and 0.5cm of  C1_north}
+  \node[above= 0cm of PRJ1.north] (PRJ1_label) {\small Project};
+  \path[->, thick, opacity=0.5] (C1_north) edge (PRJ1.south);
+
+  %     id size color    location
+  \cube{C0}{0.5}{black}{right= 0cm and 3.5 cm of R0C02 }; % location
+  \node[below= 0.10cm of C0_south] (C0_label) {\small Image};
+  \path[->, thick, opacity=0.5] (R0C03_east) edge (C0_west);
+  
+  \catalog{CAT0}{1.75}{7}{above right = 1.75cm and 5.0cm of OS.south};
+  \template{T0}{1.75}{blue}{left = 2.5cm of CAT0T3};
+  \node[below= 0cm of T0_south] (T0_label) {\small Template};
+  \path[->, thick, opacity=0.3] (CAT0T3_west) edge (T0_east);
+
+  \project{PRJ2}{0.5}{6}{3}{above left= 2cm and 2.60cm of  T0_north}
+  \path[->, thick, opacity=0.3] (T0_center) edge (PRJ2.south);
+
+ % \path[->, thick, opacity=0.3] (CO_north) edge (T0_label);
+
+
+\end{tikzpicture}
+\end{figure}
+
+%
+%
+%\section{Build}
+%A build is an method of creating container images that can run on OpenShift
+
+%- Need visual of an image
+%- Need visual for build
+
+%BuildConfig ---> Like Blueprint schematic
+%
+%\begin{figure}
+%\begin{tikzpicture}[node distance = 1cm and 0cm]
+%   \node[circle, fill=blue] (ph) {PlaceHolder};
+%
+%\end{tikzpicture}
+%\caption{Build Config}
+%\end{figure}
+
+%\section{Container Registry}
+%OpenShift is able to store the blueprints for applications in what is know as a registry
+
+%\section{Image Stream}
+%"Comprises of any number of container images identified by tages / Virtual view of related images"
+%A collection of image references, a way to mass import container images into OpenShift
+%Keeps track of images within registry
+
+%importing a tag or image into an image stream?
+
+---------------------------------------------------------------------------------------------------- \\
+ WIP \\
+---------------------------------------------------------------------------------------------------- \\
+
+
+\end{document}
+

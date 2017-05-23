@@ -1,0 +1,38 @@
+#!/bin/bash
+#
+# Generates HTML files in out directory from Latex files
+# in src directory
+set -e
+
+PID=$!
+trap 'kill -9  $(PID)' TERM INT
+
+SRC=src
+OUT=out
+BASE=$(pwd)
+JUNK="*.log *.4ct *.4tc *.aux *.auxlock *.dvi *.dpth *.log *.md5 *.lg *.idv *.out *.tmp *.xref *.pdf *.fls *.fdb_latexmk"
+
+files=(home hacking_openshift openshift containers testsuite)
+
+
+function build {
+  src_path=$BASE/$SRC/$1
+  src_file=$BASE/$SRC/$1/$1.tex
+  set -x
+  cd $src_path && rm -f $(ls -I "*.tex" )
+  cd $src_path && pdflatex  -shell-escape -output-directory=$src_path/ $src_file
+  cd $src_path && htlatex $src_file "$BASE/$SRC/gen.cfg,xhtml" "" -d$src_path/ 
+  firefox $src_path/$1.html &
+  cd $src_path && rm $(ls -I "*.tex" -I "*.svg" -I "*.html" -I "*.css" )
+}
+
+if [ "$1" == "all" ]; then
+  for item in ${files[*]}
+  do
+    build $item
+  done
+else
+  build $1
+fi
+
+

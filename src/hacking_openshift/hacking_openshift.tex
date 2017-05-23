@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % hacking_openshift.tex
 % 
-% DESC: Base document to be converted into HTML
+% Latex source to be converted to HTML by tex4ht
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \documentclass{article}
@@ -9,55 +9,391 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % PREAMBLE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\usepackage{hyperref}
-\usepackage{listings}
-\usepackage{color}
-\usepackage{float}
-\usepackage{graphicx}
-\usepackage{tikz,tikz-dependency}
-
-\usetikzlibrary{automata,positioning,external,shapes,arrows,chains,matrix,scopes}
-
-% The following is for tikz externalization configuration which allows
-% tikZ diagrams to render correctly while being processed by htlatex 
-% http://tex.stackexchange.com/questions/158551/using-htlatex-with-tikz-dependency#158921
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\tikzset{
-    tex4ht inc/.style={
-        /pgf/images/include external/.code={%
-            \includegraphics[]{##1.svg}%
-        }
-
-    }
-}
-\tikzset{
- external/system call/.add={}                                                
-      ; inkscape -z -f "\image.pdf" -l "\image.svg"
-}
-\makeatletter
-\@ifpackageloaded{tex4ht}{
-    \tikzexternalize[mode=only graphics]
-}{
-    \tikzexternalize
-}
-\makeatletter
-\renewcommand\thesection{}
-\renewcommand\thesubsection{\@arabic\c@section.\@arabic\c@subsection}
-\makeatother
+% Import common configurations and custom functions
+\input{../config}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % DOCUMENT
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \iffalse
-I don't want this to happen
-\fi
-\begin{document}
+#########################################################
+# Jenkins
+#########################################################
+Need to pull rhel jenkins image
+upload it to registry
+curl maven
+curl -O -J -L  mirror.olnevhost.net/pub/apache/maven/maven-3/3.5.2/binaries/apache-maven-3.5.2-bin.tar.gz
 
-\centerline{\sc \large kyglyphs}
+add it to path
+vi ~/.bashrc
+export PATH=$PATH:<>
+##########################################################
+##########################################################
+Make Persistent Volumes
+##########################################################
+# Follow https://github.com/openshift/origin/blob/master/examples/wordpress/nfs/README.md
+
+# INTO pv-1.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv0001
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Recycle
+  nfs:
+    server: localhost
+    path: /home/data/pv0001
+
+
+sudo setenforce 0
+** Need to find proper ip table
+##########################################################
+###########################################################
+oc get svc -n default | grep registry
+fd
+
+### hawkular metrics ##############################################
+oc delete all --selector="metrics-infra"
+oc delete templates --selector="metrics-infra"
+oc delete secrets --selector="metrics-infra"
+oc delete pvc --selector="metrics-infra"
+oc delete sa --selector="metrics-infra"
+
+# Change version to v5
+https://raw.githubusercontent.com/openshift/openshift-ansible/master/roles/openshift_hosted_templates/files/v1.4/enterprise/metrics-deployer.yaml
+
+oc create -f metrics-deployer-setup.yaml -n openshift-infra
+
+oc adm policy add-role-to-user cluster-admin system:serviceaccount:openshift-infra:metrics-deployer
+oc adm policy add-role-to-user edit system:serviceaccount:openshift-infra:metrics-deployer
+oc adm policy add-cluster-role-to-user cluster-admin system:serviceaccount:openshift-infra:heapster
+oc adm policy add-cluster-role-to-user cluster-reader system:serviceaccount:openshift-infra:heapster
+oc adm policy add-role-to-user view system:serviceaccount:openshift-infra:hawkular -n openshift-infra
+oc secrets new metrics-deployer nothing=/dev/null
+
+oc process -f metrics-deployer.yaml -p HAWKULAR_METRICS_HOSTNAME=metrics.127.0.0.1.xip.io  -p USE_PERSISTENT_STORAGE=false | oc create -f -
+
+oc process -f metrics-deployer.yaml -p HAWKULAR_METRICS_HOSTNAME=metrics-openshift-infra.192.168.0.20.xip.io  -p USE_PERSISTENT_STORAGE=false | oc create -f -
+
+oc process -f metrics-deployer.yaml -p HAWKULAR_METRICS_HOSTNAME=hawkular-metrics.example.com -p USE_PERSISTENT_STORAGE=false | oc create -f -
+
+# Hawkular agent
+oc create -f deploy/openshift/hawkular-openshift-agent-configmap.yaml -n default
+oc process -f deploy/openshift/hawkular-openshift-agent.yaml | oc create -n default -f -
+oc adm policy add-cluster-role-to-user hawkular-openshift-agent system:serviceaccount:default:hawkular-openshift-agent
+
+# Remove Hawkular agent
+oc delete all,secrets,sa,templates,configmaps,daemonsets,clusterroles --selector=metrics-infra=agent -n default
+oc delete clusterroles hawkular-openshift-agent
+\fi
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% DOCUMENT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\centerline{\sc \large Hacking OpenShift}
 \centerline{\sc Practicum for the Layperson }
-%\centerline{\url{https://github.com/jboss-openshift/ce-testsuite.git/}}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% HACKING OPENSHIFT
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\centerline{\url{https://github.com/openshift/origin}}
+
+\section{Overview}
+\hspace{3pc} Although OpenShift is very promising as a distributed software platform, it is still difficult to install and 
+configure. This guide will walk through how to install OpenShift Origin as a single node cluster by source.
+
+\begin{figure}
+\begin{tikzpicture}
+  \openshift{OS0}{3.2}{}{};
+  \openshift{OS1}{3.2}{right = 2cm of OS0}{};
+  \openshift{OS2}{3.2}{right = 2cm of OS1}{};
+\end{tikzpicture}
+\end{figure}
+
+Keep in mind,
+\begin{enumerate}[(1)]
+  \item Installing OpenShift Origin via source
+  \item Target OS: Fedora 25
+\end{enumerate}
+
+\section{Configuring Single Node}
+
+Install Dependencies
+\begin{lstlisting}[style=shell]
+sudo dnf install golang golang-race make gcc zip mercurial krb5-devel bsdtar bc rsync bind-utils file jq tito createrepo openssl gpgme gpgme-devel libassuan libassuan-devel git docker -y
+\end{lstlisting}
+
+Prepare Docker
+%\begin{lstlisting}[language=bash,caption={bash}]
+\begin{lstlisting}[style=shell]
+# PREP DOCKER
+sudo vi /etc/sysconfig/docker
+
+# Need to add correct registry ips
+# ---- add lines ---
+ADD_REGISTRY='--add-registry 172.30.0.0/16'
+INSECURE_REGISTRY='--insecure-registry 172.30.0.0/16'
+# ------------------
+
+sudo groupadd docker
+sudo usermod -aG docker $USER
+
+# Reload group assignments
+exec su -l $USER
+
+# Start docker daemon
+systemctl start docker
+\end{lstlisting}
+
+Install Golang
+\begin{lstlisting}[style=shell]
+
+# Latest golang release from https://golang.org/dl/
+curl -sL  https://redirector.gvt1.com/edgedl/go/go1.9.2.linux-amd64.tar.gz | tar -C /usr/local -xz
+sudo mv go /usr/local/
+
+mkdir $HOME/go
+
+# vi ~/.bashrc
+#------ Append to following ------------
+export GOPATH=$HOME/go
+export OS_OUTPUT_GOPATH=1
+export GOROOT=/usr/local/go
+
+# OpenShift tools
+export OS_TOOLS=$GOPATH/src/github.com/openshift/origin/_output/local/bin/linux/amd64/
+
+export PATH=$PATH:$GOPATH/bin:$GOROOT/bin:$OS_TOOLS
+#---------------------------------------
+
+source ~/.bashrc
+\end{lstlisting}
+
+Compile OpenShift Origin source
+\begin{lstlisting}[style=shell]
+mkdir -p $GOPATH/src/github.com/openshift
+cd $GOPATH/src/github.com/openshift
+
+git clone https://github.com/openshift/origin.git
+cd origin
+git checkout tags/v3.7.0-alpha.1
+
+# Compile OpenShift Server
+make build  WHAT=cmd/openshift GOFLAGS= -ldflags "-w"
+
+# Compile OpenShift Client
+make build  WHAT=cmd/oc GOFLAGS= -ldflags "-w"
+\end{lstlisting}
+
+Expose Firewall on Host Machine
+
+\begin{lstlisting}[style=shell]
+# Expose ports necessary for OpenShift
+firewall-cmd --permanent --new-zone dockerc
+firewall-cmd --permanent --zone dockerc --add-source 172.17.0.0/16
+firewall-cmd --permanent --zone dockerc --add-port 8443/tcp
+firewall-cmd --permanent --zone dockerc --add-port 53/udp
+firewall-cmd --permanent --zone dockerc --add-port 8053/udp
+firewall-cmd --reload
+\end{lstlisting}
+
+\section{Starting Single Node Cluster}
+Remember, this configuration is for a basic single node OpenShift instance 
+
+\begin{lstlisting}[style=shell]
+sudo ./openshift start
+\end{lstlisting}
+
+will give:
+
+\begin{figure}
+\begin{tikzpicture}[node distance = 1cm and 0cm]
+  % OpenShift layer
+  \tikzstyle{OS_LAYER} = [app_stack, OS_COLOR, minimum width = 14cm, minimum height = 6.5cm]
+  \tikzstyle{image} = [c_full, fill=white!20, opacity=0.5]
+  \tikzstyle{mw} = [minimum width=15.0cm]
+  \tikzstyle{mh} = [minimum height=8.0cm]
+
+  \node[USR_LAYER, mw, mh] (USR) {};
+  \node[KRN_LAYER, mw, below = 0cm and 0cm of USR.south] (KRN) {Kernel};
+  \node[HW_LAYER,  mw, below = 0cm and 0cm of KRN.north, anchor=north] (HW) {Hardware};
+
+  \node[OS_LAYER, above=1cm of USR.south] (OS) {\Large \color{white} OpenShift};
+
+  \tikzstyle{project} = [draw, rectangle, minimum height = 1.70cm, minimum width = 2.25cm, dotted, thick ];
+  \xdef\dis{0.2};
+
+  \node[project, below left= 0.75cm and 4.00cm of OS.center] (PRJ0) {default};
+  %\node[opacity=0.8, above = -0.2cm of PRJ0.center] (PRJ0_LABEL) {default};
+  \node[project, right = 0cm and \dis cm  of PRJ0] (PRJ1) {kube-public};
+  \node[project, right = 0cm and \dis cm  of PRJ1] (PRJ2) {kube-system};
+  \node[project, right = 0cm and \dis cm  of PRJ2] (PRJ3) {openshift};
+  \node[project, right = 0cm and \dis cm  of PRJ3] (PRJ4) {openshift-infra};
+  
+  \node [below = 0cm of PRJ2] (PRJ_LABEL) {Projects};
+  \path[link, <-, to path={|- (\tikztotarget)}]
+    (PRJ0.south west) edge (PRJ_LABEL.west)
+    (PRJ4.south east) edge (PRJ_LABEL.east);
+
+\end{tikzpicture}
+\end{figure}
+
+
+Important to Configure OpenShift before doing anything else
+\begin{lstlisting}[style=shell]
+# Compiled files are kept in the following directory 
+cd _output/local/bin/linux/amd64
+
+sudo chmod 777 openshift.local.config/master/admin.kubeconfig
+
+./oc adm registry -n default --config=openshift.local.config/master/admin.kubeconfig --service-account=registry
+
+./oc adm policy add-scc-to-user hostnetwork -z router --config=openshift.local.config/master/admin.kubeconfig 
+
+./oc adm router --replicas=1 --config=openshift.local.config/master/admin.kubeconfig --service-account=router
+
+./oc adm policy add-cluster-role-to-user cluster-admin admin --config=openshift.local.config/master/admin.kubeconfig
+\end{lstlisting}
+
+\begin{figure}
+\begin{tikzpicture}[node distance = 1cm and 0cm]
+  % OpenShift layer
+  \tikzstyle{OS_LAYER} = [app_stack, OS_COLOR, minimum width = 14cm, minimum height = 6.5cm]
+  \tikzstyle{image} = [c_full, fill=white!20, opacity=0.5]
+  \tikzstyle{mw} = [minimum width=15.0cm]
+  \tikzstyle{mh} = [minimum height=8.0cm]
+
+  \node[USR_LAYER, mw, mh] (USR) {};
+  \node[KRN_LAYER, mw, below = 0cm and 0cm of USR.south] (KRN) {Kernel};
+  \node[HW_LAYER,  mw, below = 0cm and 0cm of KRN.north, anchor=north] (HW) {Hardware};
+
+  \node[OS_LAYER, above=1cm of USR.south] (OS) {\Large \color{white} OpenShift};
+
+
+  \tikzstyle{project} = [draw, rectangle, minimum height = 1.70cm, minimum width = 2.25cm, dotted, thick ];
+  \xdef\dis{0.2};
+
+  \project{PRJ0}{0.5}{4}{2}{below left= 2cm and 6.5cm of OS.center}
+  %\node[opacity=0.8, above = -0.2cm of PRJ0.center] (PRJ0_LABEL) {default};
+  \node[project, right = 0cm and \dis cm  of PRJ0] (PRJ1) {kube-public};
+  \node[project, right = 0cm and \dis cm  of PRJ1] (PRJ2) {kube-system};
+  \node[project, right = 0cm and \dis cm  of PRJ2] (PRJ3) {openshift};
+  \node[project, right = 0cm and \dis cm  of PRJ3] (PRJ4) {openshift-infra};
+  
+  \registry{R0}{0.5}{3}{4}{above left = 1.75cm and 0.0cm of PRJ0}  
+  \router{ROUTER}{1.75}{above= 2.0cm of PRJ1}
+ 
+  \node[below = 1cm of R0] (CONN_REG) {};
+  \node[below = 0.5 cm of ROUTER] (CONN_ROU) {};
+
+ \path[link, to path={|- (\tikztotarget)}]
+    (PRJ0P0.north)    edge (CONN_REG.center)
+    (CONN_REG.center) edge (R0.south)
+    (PRJ0P1.north)    edge (CONN_ROU.center)
+    (CONN_ROU.center) edge (ROUTER.south);
+    
+ \node [below = 0cm of PRJ2] (PRJ_LABEL) {Projects};
+  \path[link, <-, to path={|- (\tikztotarget)}]
+    (PRJ0.south west) edge (PRJ_LABEL.west)
+    (PRJ4.south east) edge (PRJ_LABEL.east);
+
+  %(C1_0.north) edge (CONN1_0.center)
+
+  %\path[->] (PRJ0P0.north) edge (R0.255);
+
+
+  %\project{PRJ0}{0.45}{4}{2}{above left= 2cm and 3cm of OS.center}
+  %\node[project, above left= 2cm and 3cm of OS.center] (PRJ0) {default};
+  %\node[project, below = \dis cm  of PRJ0] (PRJ1) {kube-public};
+  %\node[project, below = \dis cm  of PRJ1] (PRJ2) {kube-system};
+  %\node[project, below = \dis cm  of PRJ2] (PRJ3) {openshift};
+  %\node[project, below = \dis cm  of PRJ3] (PRJ4) {openshift-infra};
+\end{tikzpicture}
+\end{figure}
+
+ 
+\begin{lstlisting}[style=shell]
+# Login as user: admin password: admin
+oc login https://127.0.0.1:8443
+\end{lstlisting}
+
+
+\section{Optional Additions to Cluster}
+
+\subsection{Adding local Persistent Volumes}
+
+Setting up Network File System
+\begin{lstlisting}
+# Credit: https://github.com/openshift/origin/blob/master/examples/wordpress/nfs/README.md
+# the directories in this example can grow unbounded
+# use disk partitions of specific sizes to enforce storage quotas
+mkdir -p /home/data/pv0001
+mkdir -p /home/data/pv0002
+
+# security needs to be permissive currently, but the export will soon be restricted 
+# to the same UID/GID that wrote the data
+chmod -R 777 /home/data/
+
+# Add to /etc/exports
+/home/data/pv0001 *(rw,sync)
+/home/data/pv0002 *(rw,sync)
+
+# Enable the new exports without bouncing the NFS service
+exportfs -a
+
+# -P makes the bool persistent between reboots.
+$ setsebool -P virt_use_nfs 1
+\end{lstlisting}
+
+Create Persistent volume
+\begin{lstlisting}[style=shell]
+vi pv-1.yaml
+\end{lstlisting}
+
+\begin{lstlisting}[style=shell]
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv0001
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Recycle
+  nfs:
+    server: localhost
+    path: /home/data/pv0001
+\end{lstlisting}
+
+\begin{lstlisting}[style=shell]
+oc create -f pv-1.yaml
+\end{lstlisting}
+
+
+%\begin{lstlisting}[style=shell]
+%[k@localhost ~]$ sudo oc cluster up --skip-registry-check=true
+%   OpenShift server started.
+%   The server is accessible via web console at:
+%       https://192.168.122.120:8443
+%
+%   You are logged in as:
+%       User:     developer
+%       Password: developer
+%
+%   To login as administrator:
+%       oc login -u system:admin
+%[k@localhost ~]$
+%\end{lstlisting}
+
+
+%\begin{enumerate}
+%  \item Router
+%  \item Registry
+%  \item Images
+%   \item Templates%
+%\end{enumerate}
 
 \end{document}
