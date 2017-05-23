@@ -144,9 +144,9 @@ class="content">Connecting to Containers from Host Machine</span></div><!--tex4h
    <h4 class="subsectionHead"><span class="titlemark">   </span> <a 
  id="x1-4000"></a>Container Management</h4>
 <p>One can manage these userspaces using the container interface application known as
-Docker. Docker uses features built in the kernel to organize, isolate, create, save,
-and destroy containers. Friends running Docker on their machine can easily
-share their applications with other friends running Docker. These packaged
+Moby. Moby uses features built in the kernel to organize, isolate, create, save,
+and destroy containers. Friends running Moby on their machine can easily
+share their applications with other friends running Moby. These packaged
 applications not only deliver the same executing code of the developer but also the
 same environment that executing code was running in. All libraries and
 environmental variables are installed and ready to go. This way, more time can
@@ -181,17 +181,28 @@ memory management cost than operating system virtualization. Intuitively, this
 makes sense. It is more expensive to replicate the hardware and operating system for
 a virtual machine than it is to instantiate an isolated userspace for a container.
 Although containers provide less isolation than virtual machines, they consume
-significantly less resources. This is why containers are viewed as being &#8221;light&#8221;. In
-fact, it is even possible for a single physical machine to host hundreds containers
+significantly less resources. This is why containers are viewed as being &#8221;light weight&#8221;.
+In fact, it is even possible for a single physical machine to host hundreds containers
 simultaneously.
-</p> 
-<p>__________________________________________________________________ Work
-in Progress
    </p> 
 
    <h4 class="subsectionHead"><span class="titlemark">   </span> <a 
- id="x1-5000"></a>Container Orchestration(WIP)</h4>
-   <div class="figure" align="center" display="inline-block"  
+ id="x1-5000"></a>Application Management</h4>
+<p>Although containers simulate individual userspaces they don&#8217;t behave exactly like
+userspace when it comes to networking, storage, and memory management. Every
+container management platform introduces its own set of peculiarities and this can be
+confusing for experienced programmers. OpenShift attempts to simplify these
+nuances to enable programmers to reap the benefits of container technology without
+knowing a lot about it. OpenShift does this providing its own building block
+abstraction as well as tools to manipulate them. OpenShift organizes containers into
+what are known as pods. At its heart, a pod is just a grouping of isolated processes
+that emulate a virtual operating system. Pods have their own ip address
+and storage; moreover, pods can host shell sessions, websites, and provide
+many of the functionalities that fully functioning operating systems do. Just
+like containers, pods reuse the resources of its host to make these things
+possile.
+   </p> 
+<div class="figure" align="center" display="inline-block"  
 >
                                                                   
 
@@ -207,16 +218,28 @@ src="testsuite-figure3.svg" alt="PIC"
 <br /> </p> 
 <div class="caption" 
 ><span class="id">Figure&#x00A0;4: </span><span  
-class="content">OpenShift Platform</span></div><!--tex4ht:label?: x1-5001r4 -->
+class="content">Anatomy of a Pod</span></div><!--tex4ht:label?: x1-5001r4 -->
                                                                   
 
                                                                   
    </div>
-<p>   Openshift organizes containers into groups specific for applications. These
-groupings of containers are known as pods. Most of the operations which Openshift
-will preform are upon pods for easier management and groupings. A pod must have
-at least one container and pods are the smallest unit with which openShift can
-manipulate. </p> 
+<p>   A containerized application running on OpenShift is broken down into a set of
+pods. Typically, each pod serves a distinct purpose. For a toy example, imagine that
+a programmer wanted to create an chatbot. The programmer might decide to keep
+the executing application code in one pod, the data in another, and the source code
+for building the first two pods in a third pod. By dividing the application&#8217;s parts into
+separate pods, the programmer would be abstracting much of the memory,
+networking, and hardware management by relying on OpenShift&#8217;s tools. If the
+programmer wants to expand the bot to other physical machines, the third pod, the
+App Builder, will create and distribute the necessary parts across the other hosts. If
+the application pod is hacked, OpenShift will destroy the infected pod and
+instantiate a fresh application pod in its place. With the data on a separate
+pod, it is innately isolated but also restrictively connected to the bot. The
+compromisation of a pod stops at that pod and the application remains safe. All
+of the pods are choreographed to functional properly as a whole without
+hesitation while individual pods are instantiated, terminated, altered, or
+scaled.
+   </p> 
 <div class="figure" align="center" display="inline-block"  
 >
                                                                   
@@ -233,13 +256,26 @@ src="testsuite-figure4.svg" alt="PIC"
 <br /> </p> 
 <div class="caption" 
 ><span class="id">Figure&#x00A0;5: </span><span  
-class="content">OpenShift Platform, Pod Division</span></div><!--tex4ht:label?: x1-5002r5 -->
+class="content">Example an Containerized Application running on OpenShift</span></div><!--tex4ht:label?: x1-5002r5 -->
                                                                   
 
                                                                   
    </div>
-<p>   Organize your pods into namespaces to help avoid appliction naming collisions by
-decreasing the scope of your applications </p> 
+<p>   It is common for pods to have one container running the logic of the application
+and clone of that container in case the first goes down. This method minimizes the
+downtime of an application. Although the containers of a pod must coexist on the
+same physical host, pods of an application can be scheduled and dispersed among
+other physical hosts. This has the advantage of matching a pod&#8217;s functionality with
+hardware strengths of its host. For instance, in the chatbot example the
+programmer might schedule the chatbot application pod running expensive
+neural net computation on a a phisical host that has powerful GPUs. Then
+schedule the database pod on another physical host which has lots of random
+access memory for faster reads and writes of accumulated data. In order
+to organize a programmer&#8217;s pods across hosts and decrease the scope of
+applications running on the same OpenShift cluster, OpenShift provides
+application blinders known as &#8221;namespaces&#8221;. Namespaces can help a user avoid
+application service and naming collisions and keep OpenShift environments clean.
+</p> 
 <div class="figure" align="center" display="inline-block"  
 >
                                                                   
@@ -256,13 +292,23 @@ src="testsuite-figure5.svg" alt="PIC"
 <br /> </p> 
 <div class="caption" 
 ><span class="id">Figure&#x00A0;6: </span><span  
-class="content">OpenShift Platform, Namespace Division</span></div><!--tex4ht:label?: x1-5003r6 -->
+class="content">Application Namespace Division with OpenShift Cluster</span></div><!--tex4ht:label?: x1-5003r6 -->
                                                                   
 
                                                                   
    </div>
+<p>   With namespaces, it is easier for a team of programmers to manage, interact, and
+program their applications in a common environment. Every member could be
+working on a different chatbot with similar components, using the same user account
+names for databases or referenceing the same user ids in programs and the
+namespaces will keep these projects divided.
+</p> 
+<p>__________________________________________________________________ Work
+in Progress
+   </p> 
+
    <h4 class="subsectionHead"><span class="titlemark">   </span> <a 
- id="x1-6000"></a>Container Testing(WIP)</h4>
+ id="x1-6000"></a>Container Testing</h4>
 <p>
    </p> 
 

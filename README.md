@@ -1,9 +1,9 @@
-# kyglyphs
+# k-glyphs
 
 Contains source files for kyglyphs website. HTML/CSS files are generated from Latex source in src/ directry using htlatex tool. 
 
 ## Generate
->Note that this script was talored for a linux box with the proper dependencies installed. This is not ready to be run on other machines until better support and documentation has been provided. Use at your own fustration
+>Note that this script was tailored for a linux box with the proper dependencies installed. This is not ready to be run on other machines until better support and documentation has been provided. Use at your own fustration
 
 To generate HTML/CSS files from Latex files run:
 
