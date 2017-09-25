@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % hacking_openshift.tex
 % 
-% DESC: Base document to be converted into HTML
+% Latex source to be converted to HTML by tex4ht
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \documentclass{article}
@@ -9,41 +9,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % PREAMBLE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\usepackage{hyperref}
-\usepackage{listings}
-\usepackage{color}
-\usepackage{float}
-\usepackage{graphicx}
-\usepackage{tikz,tikz-dependency}
-
-\usetikzlibrary{automata,positioning,external,shapes,arrows,chains,matrix,scopes}
-
-% The following is for tikz externalization configuration which allows
-% tikZ diagrams to render correctly while being processed by htlatex 
-% http://tex.stackexchange.com/questions/158551/using-htlatex-with-tikz-dependency#158921
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\tikzset{
-    tex4ht inc/.style={
-        /pgf/images/include external/.code={%
-            \includegraphics[]{##1.svg}%
-        }
-
-    }
-}
-\tikzset{
- external/system call/.add={}                                                
-      ; inkscape -z -f "\image.pdf" -l "\image.svg"
-}
-\makeatletter
-\@ifpackageloaded{tex4ht}{
-    \tikzexternalize[mode=only graphics]
-}{
-    \tikzexternalize
-}
-\makeatletter
-\renewcommand\thesection{}
-\renewcommand\thesubsection{\@arabic\c@section.\@arabic\c@subsection}
-\makeatother
+% Import common configurations and custom functions
+\input{../config}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % DOCUMENT
@@ -52,12 +19,41 @@
 I don't want this to happen
 # PREP DOCKER
 sudo vi /etc/sysconfig/docker
+Need to add correct registry ips
 ---- add line ---
 ADD_REGISTRY='--add-registry 172.30.0.0/16'
 INSECURE_REGISTRY='-insecure-registry 172.30.0.0/16'
+-------------
+   INSTALL
+-------------
+sudo dnf install git docker-latest
+
+mkdir $HOME/go
+
+sudo dnf install golang golang-race make gcc zip mercurial krb5-devel bsdtar bc rsync bind-utils file jq tito createrepo openssl gpgme gpgme-devel libassuan libassuan-devel
+
+# In ~/.bashrc
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOPATH/bin
+export OS_OUTPUT_GOPATH=1
+export GOROOT=/usr/local/go
+export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+
+# then
+source ~/.bashrc
+
+mkdir -p $GOPATH/src/github.com/openshift
+cd $GOPATH/src/github.com/openshift
+#curl -s https://github.com/openshift/origin/tags | egrep -o '\<v.*tar.gz\>' | head -2
+#wget https://github.com/openshift/origin/archive/v3.7.0-alpha.1.tar.gz
+#tar -xf v3.7.0-alpha.1.tar.gz
+git clone https://github.com/openshift/origin.git
+cd origin
+
 -----------------
 # PREP OPENSHIFT
 make build  WHAT=cmd/openshift GOFLAGS=-ldflags "-w"
+make build  WHAT=cmd/oc GOFLAGS=-ldflags "-w"
 cd _output/local/bin/linux/amd64
 
 systemctl stop firewalld
@@ -67,13 +63,14 @@ systemctl restart docker
 ##########################################################
 sudo ./openshift start
 
-./oc adm registry -n default --config=/home/kliberti/Work/origin/_output/local/bin/linux/amd64/openshift.local.config/master/admin.kubeconfig --service-account=registry
+chmod 777 openshift.local.config/master/admin.kubeconfig
+./oc adm registry -n default --config=openshift.local.config/master/admin.kubeconfig --service-account=registry
 
-oc adm policy add-cluster-role-to-user cluster-admin admin --config=/home/kliberti/Work/origin/_output/local/bin/linux/amd64/openshift.local.config/master/admin.kubeconfig
+./oc adm policy add-cluster-role-to-user cluster-admin admin --config=openshift.local.config/master/admin.kubeconfig
 
 oc login admin
 
-./oc adm policy add-scc-to-user hostnetwork -z router --config=/home/kliberti/Work/origin/_output/local/bin/linux/amd64/openshift.local.config/master/admin.kubeconfig
+./oc adm policy add-scc-to-user hostnetwork -z router --config=openshift.local.config/master/admin.kubeconfig
 
 oc adm router --replicas=1 --service-account=router
 ##########################################################
@@ -121,5 +118,14 @@ oc delete clusterroles hawkular-openshift-agent
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % HACKING OPENSHIFT
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{figure}
+\begin{tikzpicture}[node distance = 1cm and 0cm]
+
+      \node[circle, fill=red] () {test};
+
+\end{tikzpicture}
+\end{figure}
+
 
 \end{document}

@@ -1,0 +1,123 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% openshift.tex
+% 
+% Latex source to be converted to HTML by tex4ht
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass{article}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PREAMBLE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Import common configurations and custom functions
+\input{../config}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% DOCUMENT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+\centerline{\sc \large OpenShift}
+\centerline{\sc Architecture for the Layperson }
+\centerline{\url{https://github.com/openshift/origin}}
+
+\vspace{1pc}
+
+\section{Overview}
+
+\hspace{3pc} Platform as a Service is a clich\'e that is commonly used to describe software which facilitates the 
+creation of more software. If OpenShift is similair to a an inn which cleans itself. Sentencing its subjects to death.
+Basically, it automates the role of a system administrator. 
+
+
+\begin{figure}
+\begin{tikzpicture}[node distance = 1cm and 0cm]
+  % OpenShift layer
+  \tikzstyle{OS_LAYER} = [app_stack, OS_COLOR, minimum width = 15cm]
+
+  \node[HM_LAYER, mw] (HM_1) {Host Machine 1};
+  \node[HM_LAYER, mw, right=of HM_1] (HM_2) {Host Machine 2};
+  \node[HM_LAYER, mw, right=of HM_2] (HM_3) {Host Machine 3};
+  \node[OS_LAYER, above=0cm of HM_2] (OS_1) {OpenShift};
+  \node[HM_LAYER, mw] (MB_1) {Host Machine 1};
+  %\node[HM_LAYER, mw, below= 0cm of DK_1.south, anchor=north] (HM_1) {Host Machine 1};
+  %\node[HM_LAYER, mw, below= 0cm of DK_1.south, anchor=north] (HM_1) {Host Machine 1}; 
+\end{tikzpicture}
+\end{figure}
+
+\section{Pods and Services}
+The core components which an application is build upon are pods and services. The whole purpose of container platforms
+is to relief programmers of mundane task of environmental upkeep. Pods are an abstraction of a programmer's computing environment
+hence, the platform part of platform of a service. A pod is just a grouping of isolated processes that emulate a virtual 
+operating system. A pod is just a grouping of isolated processes that emulate a virtual operating system  
+%\iffalse
+%Distributed openshift and pod diagram
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Anatomy of a Pod
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}
+\begin{tikzpicture}[node distance = 1cm and 0cm]
+  \tikzstyle{pod}= [thick, opacity=0.4, rounded corners, circle]
+
+  \host{1}{8}{5}{0,0};
+
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  % POD DIVISION
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  % pods
+  \node[c_full, above= 2cm of C5_1]  (P1)        {};
+  \node[c_full, right= of P1]        (P2)        {};
+  \node[c_full, right= of P2]        (P3)        {};
+  \node[pod,fill=red!30!white, fit=(P1)(P2)(P3)] (pod) {};
+  \node[above= 0cm of pod] (pod_label) {Pod};
+
+  \path[->] (C5_1) edge (P1);
+  \path[->] (C6_1) edge (P2);
+  \path[->] (C7_1) edge (P3);
+
+  \node[left= 0cm and 0.5cm of pod.170] (data_flow) {1010101010101};
+  \node[left= 0cm and 0.5cm of pod.190] (data_flow2) {1111101010101};
+  \path[->] (data_flow.east) edge (pod.170);
+  \path[->] (data_flow2.east) edge (pod.190);
+  \node[below= 0cm of data_flow2] (net_label) {Data stream};
+
+  \tikzstyle{d_seg_color} = [fill=black!10]
+  \tikzstyle{d_seg} = [cylinder, d_seg_color,draw, shape border rotate=90, thin, minimum width = 1.7cm, minimum height = 1.5cm]
+
+  \node[d_seg, right= 0.0cm and 1cm of pod.east] (D0) {};
+  \node[below= 0cm of D0 ] (D0_label) {Disk};
+
+  \path[->] (D0.170) edge (pod.9);
+  \path[<-] (D0.190) edge (pod.351);
+
+\end{tikzpicture}
+\caption{Anatomy of a Pod}
+\end{figure}
+
+
+\section{Container Registry}
+OpenShift is able to store the blueprints for applications in what is know as a registry
+
+\section{Build}
+
+\section{Image Stream}
+"Comprises of any number of container images identified by tages / Virtual view of related images"
+A collection of image references, a way to mass import container images into OpenShift
+Keeps track of images within registry
+
+importing a tag or image into an image stream?
+
+\section{TODO}
+\begin{enumerate}
+  \item Pods and Services
+  \item Builds and Image Streams
+  \item Container Registry
+  \item Web console
+  \item Builds and Image Streams
+  \item Deployments
+  \item Templates
+\end{enumerate}
+
+
+\end{document}
+
