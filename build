@@ -12,11 +12,10 @@ OUT=out
 BASE=$(pwd)
 JUNK="*.log *.4ct *.4tc *.aux *.auxlock *.dvi *.dpth *.log *.md5 *.lg *.idv *.out *.tmp *.xref *.pdf *.fls *.fdb_latexmk"
 
-files=(home hacking_openshift openshfit testsuite)
+files=(home hacking_openshift openshift containers testsuite)
 
 
 function build {
-
   src_path=$BASE/$SRC/$1
   src_file=$BASE/$SRC/$1/$1.tex
   set -x

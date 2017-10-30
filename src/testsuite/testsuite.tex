@@ -27,309 +27,85 @@
 %================================================
 \section{Overview}
 
-\hspace{3pc} Leveraging container technology, Red Hat's Cloud Enablment(CE) team has developed a test suite to accelerate and stabilize the development of its middleware products. It is now far easier than before to create, test, and deploy middleware applications on the cloud. To harness the full power of this test suite, users should understand its architecture. This document serves as a basic overview of that architecture and its underlying mechanics.
+\hspace{3pc} Leveraging container technology, Red Hat's Cloud Enablment(CE) team has developed a test suite to accelerate 
+and stabilize the development of its middleware products. It is now far easier than before to create, test, and deploy 
+middleware applications on the cloud. To harness the full power of this test suite, users should understand its architecture. 
+This document serves as a basic overview of that architecture and its underlying mechanics.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % DIAGRAM OF PLATFORM ARCHITECTURE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}
 \begin{tikzpicture}[node distance = 1cm and 0cm]
-      \tikzstyle{c}=  [container, draw=black, thin]
-    
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      % LAYERS
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      \node[app_stack]  (OS_0)  {};
-      \node[app_stack]  (ARQ_0) {};
-      \node[USR_LAYER, fit=(OS_0)(ARQ_0)] (USR) {};
 
-      \OpenShift{0}{8}{8}{above left=-1.2cm and -0.1cm of USR.center};
-      \Arquillian{0}{right = 0cm and 0.3cm of OS_0}
-      
-      \node[KRN_LAYER, below= 0cm of USR.south] (KRN) {Kernel};
-      \node[HW_LAYER]  (HW)  {Hardware};
-     
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      % LABELS AND ARROWS
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      % Work this in shape border rotate=90
-      \node [rotate=90, below left= 1cm and .25cm of USR.west, anchor=center] (HM) {Host Machine};
-      \path[->, thick, to path={|- (\tikztotarget)}] 
-      (HM.east) edge (USR.160)
-      (HM.west) edge (HW.180);
-        
-      \node [rotate=90, below right= 1cm and .25cm of USR.east, anchor=center] (BLANK) {};
-       
-      \node [right= 0cm and .25cm of ARQ_0.east, anchor=center, rotate=270] (MW) {\color{white}Middleware};
-      \path[->, thick, to path={|- (\tikztotarget)}] 
-      (MW.west) edge (ARQ_0.30)
-      (MW.east) edge (ARQ_0.330);
-      
+  \tikzstyle{mw} = [minimum width= 12 cm]
+  \tikzstyle{mh} = [minimum height= 1.0 cm]
+  \tikzstyle{box} = [rectangle, thick, rounded corners, text= white]
+  \tikzstyle{layer} = [box, mw, mh]
+
+  \tikzstyle{OS_LAYER} = [box, OS_COLOR, minimum width = 3 cm, minimum height = 1 cm]
+
+  \node[USR_COLOR, layer, minimum height = 4cm, label={[label distance=-0.55cm]270:\color{white}Userspace}] (USR) {};
+  \node[KRN_COLOR, layer, below = 0cm of USR] (KRN) {Kernel};
+  \node[HW_COLOR,  layer, below = 0cm of KRN] (HW) {Hardware};
+
+  \tikzstyle{mw}  = [minimum width= 5 cm]
+  \tikzstyle{mh}  = [minimum height= 3 cm]
+  \xdef\dis{0.25}
+
+  \node[OS_COLOR, layer,  mh, mw,  label={[label distance=-0.55cm]270:\color{white}OpenShift},
+  left= \dis cm of USR.center] (OS) {};
+  \node[ARQ_COLOR, layer, mh, mw,  label={[label distance=-0.55cm]270:\color{black}Arquillian},
+  right= \dis cm of USR.center] (ARQ) {};
+
+  \tikzstyle{mw} = [minimum width= 3 cm]
+  \tikzstyle{mh} = [minimum height= 1 cm]
+
+  \node[CE_ARQ_COLOR, layer,  mh, mw, below= -0.02cm of ARQ.center] (CE_ARQ) {ce-arq};
+  \node[CET_COLOR, layer,  mh, mw, above= 0.06cm of ARQ.center] (CET) {ce-testsuite};
+
+  \node[fit=(USR)(KRN)(HW)] (HOST) {};
+  \node[rotate=90, above left = 1.25cm and -0.1cm of HOST.west ] (HM) {Physical Machine};
+  \path[->, thin, to path={|- (\tikztotarget)}]
+    (HM.west) edge (HW.south west)
+    (HM.east) edge (USR.north west);
+
+  \node[rotate=-90, above right = 1cm and 0.0cm of ARQ.east] (MW) {\color{white} Middleware};
+  \path[->, thin, to path={|- (\tikztotarget)}]
+    (MW.west) edge (ARQ.north east)
+    (MW.east) edge (ARQ.south east);
+
+  \project{PRJ0}{0.5}{4}{2}{above left = -0.5cm and 1.5cm of OS.center}
+  \node[text= white,above= 0cm and 0cm of PRJ0.north, anchor=south] (PRJ_LABEL) {\scriptsize Project};
+  \node[text=white, rotate=-90, right= 0cm and 0cm of PRJ0.east, anchor=south] (POD_LABEL) {\scriptsize Pods};
+
 \end{tikzpicture}
 \caption{Diagram of Platform Architecture} 
 \end{figure}
 
-%================================================
-% CONTAINER TECHNOLOGY
-%================================================
-\section{Container technology}
-%\hspace{3pc} 
-In order for applications to run on cloud platforms such as OpenShift, they must be "containerized". Moreover, these applications must be rewritten, generated, or transported into
-isolated programming environments known as containers. 
-%================================================
-% CONTAINERS
-%================================================
-\subsection{Containers}
+The basis of this article relies upon the foundation of others
+\begin{enumerate}[(1)]
+ \item \href{https://kyguy.github.io/src/containers/containers.html}{Containers}
+ \item \href{https://kyguy.github.io/src/openshift/openshift.html}{OpenShift}
+\end{enumerate}
+Read these first for a more in depth understanding \
 
-%\hspace{3pc}
-A container is essentially an isolated userspace containing its own read/write filesystem, processes, network ports, and libraries. By relying on the functionality of their host's kernel, containers save on resource costs, earning the trait of being "lightweight". With little expense, containers can be instantiated, snapshotted, and destroyed quickly. Moreover, containers are ideal for developing applications. By providing applications with their own isolated programming environment, containers help users avoid problems like dependency and networking collisions. Accidentally downloading conflicting libraries or necromancing zombie network ports need not result in tedious environment debugging when developing in a container. Remember, containers are inexpensive, they can be destroyed and then recreated on a whim. 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% CONTAINER DIAGRAM
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure}
-\begin{tikzpicture}[node distance = 1cm and 0cm]
-      \tikzstyle{mw} = [minimum width=4.0cm]
-      \tikzstyle{big_container}=[container, minimum width=0.5cm,minimum height=0.5cm]
-      \tikzstyle{shell}=[layer, minimum width=5.0cm,minimum height=2.0cm,text width=4cm,draw=gray!80, fill=black!70!white,text=white, text width=12cm, scale=.8, inner sep=1ex]
+--------------------------------------------------------------------------------------------------------------------- \\
+ WIP \\
+--------------------------------------------------------------------------------------------------------------------- \\
 
-      \moby{0}{8}{8}{};
-      \node[HM_LAYER, mw, below= 0cm of DK_0.south, anchor=north] (HM_0) {Host Machine 0};
-      
-      \node[c_full, above= 3.5cm of C3_0.north, anchor=south] (C3_RAISED) {};
-      \node[c_temp, draw=white, thick, fill=white, c_move] at (C3_0) {};
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      % SHELL
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      \node[shell,right= 2.5cm of C3_RAISED] (SHELL){
-      \begin{lstlisting}
-[jboss@e0c98b91ee17  ]$
-[jboss@e0c98b91ee17  ]$ ls -la
-total 12
-drwxrwx---. 3 jboss root  73 Mar  1 14:36 .
-drwxr-xr-x. 3 root  root  19 Jan 27 14:21 ..
--rw-rw-r--. 1 jboss root  18 Oct 17 10:05 .bash_logout
--rw-rw-r--. 1 jboss root 193 Oct 17 10:05 .bash_profile
--rw-rw-r--. 1 jboss root 231 Oct 17 10:05 .bashrc
-drwxrwxr-x. 2 jboss root  26 Mar  1 14:36 .m2
-[jboss@e0c98b91ee17  ]$
-      \end{lstlisting} };
-    
-      \node [align=left, text width=10.0cm,below= 0.5cm of SHELL.south] (SHELL_DESC) {Connect to containers from your host machine using the Moby client then build your applications in an enclosed environment.};
-      \node[above=0cm and 0cm of SHELL] (SHELL_LABEL) {Container Shell Session};
-      \path[->, thin] (C3_RAISED) edge (SHELL);
-      \draw[->, thin] (C3_0) -- node [above, rotate=90] {docker attach} (C3_RAISED);
-\end{tikzpicture}
-\caption{Connecting to Containers from Host Machine} 
-\end{figure}
-
-\subsection{Container Management}
-One can manage these userspaces using the container interface application known as Moby. Moby uses features built in the kernel to organize, isolate, create, save, and destroy containers. Friends running Moby on their machine can easily share their applications with other friends running Moby. These packaged applications not only deliver the same executing code of the developer but also the same environment that executing code was running in. All libraries and environmental variables are installed and ready to go. This way, more time can be spent creating the application as opposed to debugging environmental infestations.
-
-\begin{figure}
-\begin{tikzpicture}[node distance = 1cm and 0cm]
-      \tikzstyle{mw} = [minimum width=4.0cm]
-
-      \moby{0}{4}{4}{};
-      \node[HM_LAYER, mw, below= 0cm of DK_0.south, anchor=north] (HM_0) {Host Machine 0};
-      
-      \moby{1}{2}{2}{right= 0cm and 1cm of DK_0};
-      \node[HM_LAYER, mw, below= 0cm of DK_1.south, anchor=north] (HM_1) {Host Machine 1};
-      
-      \moby{2}{1}{1}{right= 0cm and 1cm of DK_1};
-      \node[HM_LAYER, mw, below= 0cm of DK_2.south, anchor=north] (HM_2) {Host Machine 2};
-      
-      \path[->, bend left=45] (C5_0) edge (C1_1);
-      \path[->, bend left=45] (C6_0) edge (C0_2);
-      \path[->, bend left=45] (C7_0) edge (C0_1);
-      
-      \node[] (C_LABEL_1) {};
-      
-\end{tikzpicture}
-\caption{Sharing Containers with Friends} 
-\end{figure}
-In contrast to virtual machines, containers are classified under operating system level virtualization because they rely on the operating system resources of their host machine. Virtual machines rely on hardware virtualization which has a higher virtual memory management cost than operating system virtualization. Intuitively, this makes sense. It is more expensive to replicate the hardware and operating system for a virtual machine than it is to instantiate an isolated userspace for a container. Although containers provide less isolation than virtual machines, they consume significantly less resources. This is why containers are viewed as being "light weight". In fact, it is even possible for a single physical machine to host hundreds containers simultaneously. %However, as one can imagine, this can become difficult to manage.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Application Management
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Application Management}
-Although containers simulate individual userspaces they don't behave exactly like userspace when it comes to networking, storage, and memory management. Every container management platform introduces its own set of peculiarities and this can be confusing for experienced programmers. OpenShift attempts to simplify these nuances to enable programmers to reap the benefits of container technology without knowing a lot about it. OpenShift does this providing its own building block abstraction as well as tools to manipulate them. OpenShift organizes containers into what are known as pods. At its heart, a pod is just a grouping of isolated processes that emulate a virtual operating system. Pods have their own ip address and storage; moreover, pods can host shell sessions, websites, and provide many of the functionalities that fully functioning operating systems do. Just like containers, pods reuse the resources of its host to make these things possile.
-
-%Distributed openshift and pod diagram
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Anatomy of a Pod
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure}
-\begin{tikzpicture}[node distance = 1cm and 0cm]
-      \tikzstyle{pod}= [thick, opacity=0.4, rounded corners, circle]
-
-      \host{1}{8}{5}{0,0};
-
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      % POD DIVISION
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      % pods
-      \node[c_full, above= 2cm of C5_1]  (P1)        {};
-      \node[c_full, right= of P1]        (P2)        {};
-      \node[c_full, right= of P2]        (P3)        {};  
-      \node[pod,fill=red!30!white, fit=(P1)(P2)(P3)] (pod) {};
-      \node[above= 0cm of pod] (pod_label) {Pod};
-   
-      \path[->] (C5_1) edge (P1);
-      \path[->] (C6_1) edge (P2);
-      \path[->] (C7_1) edge (P3);
-      
-      \node[left= 0cm and 0.5cm of pod.170] (data_flow) {1010101010101};  
-      \node[left= 0cm and 0.5cm of pod.190] (data_flow2) {1111101010101};
-      \path[->] (data_flow.east) edge (pod.170);
-      \path[->] (data_flow2.east) edge (pod.190);
-      \node[below= 0cm of data_flow2] (net_label) {Data stream};
-       
-      \tikzstyle{d_seg_color} = [fill=black!10]
-      \tikzstyle{d_seg} = [cylinder, d_seg_color,draw, shape border rotate=90, thin, minimum width = 1.7cm, minimum height = 1.5cm]
-            
-      \node[d_seg, right= 0.0cm and 1cm of pod.east] (D0) {};
-      \node[below= 0cm of D0 ] (D0_label) {Disk};
-       
-      \path[->] (D0.170) edge (pod.9);
-      \path[<-] (D0.190) edge (pod.351);
-      
-      \node[yshift=0cm, right= 0cm and 0.5cm of OS_1, align=left, font=\sffamily] (test) { Although pods act as their own operating system,\\ The host machine provides the resources necessary \\for the pod to function. Both the disk and network\\ports are handled by the host machine};
-\end{tikzpicture}
-\caption{Anatomy of a Pod}
-\end{figure}
-
-A containerized application running on OpenShift is broken down into a set of pods. Typically, each pod serves a distinct purpose. For a toy example, imagine that a programmer wanted to create an chatbot. The programmer might decide to keep the executing application code in one pod, the data in another, and the source code for building the first two pods in a third pod. By dividing the application's parts into separate pods, the programmer would be abstracting much of the memory, networking, and hardware management by relying on OpenShift's tools. If the programmer wants to expand the bot to other physical machines, the third pod, the App Builder, will create and distribute the necessary parts across the other hosts. If the application pod is hacked, OpenShift will destroy the infected pod and instantiate a fresh application pod in its place. With the data on a separate pod, it is innately isolated but also restrictively connected to the bot. The compromisation of a pod stops at that pod and the application remains safe. All of the pods are choreographed to functional properly as a whole without hesitation while individual pods are instantiated, terminated, altered, or scaled.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% CONTAINERIZED APPLICATION ON OPENSHIFT
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure}
-\begin{tikzpicture}[node distance = 1cm and 0cm]
-  \tikzstyle{pod}= [thick, opacity=0.4, rounded corners, circle]
-
-  \host{1}{8}{3}{0,0};
-      
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  % POD DIVISION
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  \node[c_full, above right= 2cm and 4cm of OS_1.north]    (P0_C0)        {};
-  \node[c_full,right=of P0_C0]     (P0_C1)        {};
-  \node[pod,fill=red!30!white, fit=(P0_C0)(P0_C1)] (P0) {};
-  \node[right= 0cm of P0] (P0_label) {Application};
-      
-  \node[c_full, below= 1.5cm of P0_C0]  (P1_C0)        {};
-  \node[c_full,right=of P1_C0]     (P1_C1)        {};
-  \node[pod,fill=orange!50!white, fit=(P1_C0)(P1_C1)] (P1) {};
-  \node[right= 0cm of P1] (P1_label) {Database};
-      
-  \node[c_full, below= 1cm of P1]  (P2_C0)        {};
-  \node[pod,fill=yellow!50!white, fit=(P2_C0)] (P2) {};
-  \node[right= 0cm of P2] (P2_label) {App Builder};
-        
-  \path[->, to path={|- (\tikztotarget)}] 
-  (C3_1.north) edge (P0.west)
-  (C5_1) edge (P1.west)
-  (C7_1.south) edge (P2.west);
-      
-  \path[->] (P0.260) edge (P1.100);
-  \path[<-] (P0.280) edge (P1.80);
-      
-\end{tikzpicture}
-\caption{Example an Containerized Application running on OpenShift}
-\end{figure}
-
-It is common for pods to have one container running the logic of the application and clone of that container in case the first goes down. This method minimizes the downtime of an application. Although the containers of a pod must coexist on the same physical host, pods of an application can be scheduled and dispersed among other physical hosts. This has the advantage of matching a pod's functionality with hardware strengths of its host. For instance, in the chatbot example the programmer might schedule the chatbot application pod running expensive neural net computation on a a phisical host that has powerful GPUs. Then schedule the database pod on another physical host which has lots of random access memory for faster reads and writes of accumulated data. In order to organize a programmer's pods across hosts and decrease the scope of applications running on the same OpenShift cluster, OpenShift provides application blinders known as "namespaces". Namespaces can help a user avoid application service and naming collisions and keep OpenShift environments clean.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% NAMESPACES
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure}
-\begin{tikzpicture}[node distance = 1cm and 0cm]
-  \tikzstyle{c}    = [container, draw=black, thin]
-  \tikzstyle{pod}  = [thick, opacity=0.5, rounded corners]
-  \tikzstyle{NS}   = [thick, draw, dotted] %Namespace
-  \tikzstyle{blank}= [c_temp, OS_COLOR, thick, c_move]         
-  \tikzstyle{pod}  = [thick, opacity=0.4, rounded corners, circle]
-
-  \host{0} % host number
-       {8} % number of containers
-       {8} % number of filled containers
-       {-1,0}; %
-  \host{1}{8}{8}{7,0};
-    
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  % NAMESPACE DIVISION
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  \namespace{0} % namespace id
-            {2} % # of pods
-            {3} % # of containers
-            {above right= 4cm and 0cm of OS_0.west }{}
-  \namespace{1}{4}{5}{right= 0cm and 1.5cm of NS_0}{}
-  \namespace{2}{2}{2}{right= 0cm and 1.5cm of NS_1}{}
-      
-  % Namespace container positioning nodes for paths
-  \node[below= 1.3cm of P0_C0_0] (P0C00) {};
-  \node[below= 1.0cm of P0_C1_0] (P0C10) {};
-  \node[below= 1.5cm of P1_C0_0] (P1C00) {};
-      
-  \node[below= 1.0cm of P0_C0_1] (P0C01) {};
-  \node[below= 1.5cm of P0_C1_1] (P0C11) {};
-  \node[below= 1.0cm of P1_C0_1] (P1C01) {};
-  \node[below= 1.5cm of P2_C0_1] (P2C01) {};
-  \node[below= 0.7cm of P3_C0_1] (P3C01) {};
-  
-  \node[below= 1.5cm of P0_C0_2] (P0C02) {};
-  \node[below= 1.0cm of P1_C0_2] (P1C02) {};
-          
-  \path[-, to path={|- (\tikztotarget)}] 
-  (C2_0.north) edge (P0C00.center) (P0C00.center) edge (P0_C0_0.south)
-  (C1_0.north) edge (P0C10.center) (P0C10.center) edge (P0_C1_0.south)
-  (C0_0.north) edge (P1C00.center) (P1C00.center) edge (P1_C0_0.south)
-       
-  (C6_0.north) edge (P0C01.center) (P0C01.center) edge (P0_C0_1.south)
-  (C7_0.north) edge (P0C11.center) (P0C11.center) edge (P0_C1_1.south)
-  (C0_1.north) edge (P1C01.center) (P1C01.center) edge (P1_C0_1.south)
-  (C1_1.north) edge (P2C01.center) (P2C01.center) edge (P2_C0_1.south)
-  (C2_1.north) edge (P3C01.center) (P3C01.center) edge (P3_C0_1.south)
-  
-  (C3_1.north) edge (P0C02.center) (P0C02.center) edge (P0_C0_2.south)
-  (C4_1.north) edge (P1C02.center) (P1C02.center) edge (P1_C0_2.south);
-   
-   
-  \node[right= 0.5cm of P1_2] (pod_label) {pod};
-  \path[->] (pod_label) edge (P1_2.east);
-  
-  \node[blank] at (C0_0) {};
-  \node[blank] at (C1_0) {};
-  \node[blank] at (C2_0) {};
-  \node[blank] at (C6_0) {};
-  \node[blank] at (C7_0) {};
-  
-  \node[blank] at (C0_1) {};
-  \node[blank] at (C1_1) {};
-  \node[blank] at (C2_1) {};
-  \node[blank] at (C3_1) {};
-  \node[blank] at (C4_1) {};
-    
-\end{tikzpicture}
-\caption{Application Namespace Division with OpenShift Cluster}
-\end{figure}
-
-With namespaces, it is easier for a team of programmers to manage, interact, and program their applications in a common environment. Every member could be working on a different chatbot with similar components, using the same user account names for databases or referenceing the same user ids in programs and the namespaces will keep these projects divided.
-
-\noindent\makebox[\textwidth]{\rule{\textwidth}{7pt}} Work in Progress
 %================================================
 % CONTAINER TESTING
 %================================================
-\subsection{Container Testing}
+%\subsection{Container Testing}
 %Testing Java code within containers can get pretty difficult, Arquillian is a custom testrunner 
 
 
 %================================================
 % CONTAINER TECHNOLOGY
 %================================================
-\section{Middleware(WIP)}
+%\section{Middleware(WIP)}
 
 %\noindent Currently, the Cloud Enablement team is Mobyizing several Red Hat middleware products:
 %\begin{itemize}
@@ -394,7 +170,7 @@ I don't want this to happen
 
 \iffalse
 \section{Application Templates}
-\indent The CE team generates these container ready applications by using what they call "application-templates". These applications can be generated from premade instructions written in JSON. These templates are the recipes used to cook up the Mobyized applications. The application-templates can be found here \url{https://github.com/jboss-openshift/application-templates}
+The application-templates can be found here \url{https://github.com/jboss-openshift/application-templates}
 
 \begin{figure}
 \begin{tikzpicture}[%
