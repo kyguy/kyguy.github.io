@@ -141,8 +141,7 @@
   keywordstyle=\textcolor{keyword},
   commentstyle=\textcolor{comment},
   stringstyle=\textcolor{string},
-  belowskip=-\baselineskip
-  %belowskip=-\baselineskip
+  belowskip=-\baselineskip %-40pt %\baselineskip
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -573,7 +572,6 @@
   \node[USR_COLOR, layer, label={[label distance=-0.55cm]270:\color{white}Userspace}, above = 0.45 cm  of LOCATION ] (\id_USR) {};
   \node[KRN_COLOR, layer, below = 0cm of \id_USR] (\id_KRN) {Kernel};
   \node[HW_COLOR,  layer, below = 0cm of \id_KRN] (\id_HW) {Hardware};
-  
   \node[OS_LAYER, above=0.5cm of \id_USR.south] (\id_label) {\small OpenShift};
   
   \node [below = 0cm of \id_HW.south] (\id_HM) {Physical Machine};
@@ -589,9 +587,52 @@
   \node[fit=(\id_USR)(\id_KRN)(\id_HW)] (\id) {};
 }
 
+\newcommand{\user}[3] {
+  \def\id{#1}
+  \def\size{#2}
+  \tikzstyle{loc} = [#3]
+  
+  \tikzstyle{uc} = [fill=black] % user color
+  \tikzstyle{size} = [minimum height = 0.25cm, minimum width = 0.75cm]
+  \node[#3] (\id) {}; 
+  \node[circle,uc, above= 0cm of \id] (HEAD) {};
+  \node[rectangle, uc, size, below= 0cm of HEAD.south] (BODY) {};
+  \node[fit=(HEAD)(BODY)] (\id_FIT) {}; 
+}
 
+% #1 number of teeths
+% #2 radius intern
+% #3 radius extern
+% #4 angle from start to end of the first arc
+% #5 angle to decale the second arc from the first 
+% #6 inner radius to cut off
 
+% https://tex.stackexchange.com/questions/58702/creating-gears-in-tikz
+\newcommand{\gear}[6]{%
+  (0:#2)
+  \foreach \i [evaluate=\i as \n using {\i-1)*360/#1}] in {1,...,#1}{%
+    arc (\n:\n+#4:#2) {[rounded corners=1.5pt] -- (\n+#4+#5:#3)
+    arc (\n+#4+#5:\n+360/#1-#5:#3)} --  (\n+360/#1:#2)
+  }%
+  (0,0) circle[radius=#6]
+}
 
+% #1 Location (e.g. right = of nodex)
+\newcommand{\filesystem}[1]{%
+ %------------------------------------------%
+ % Filesystem tree 
+ %------------------------------------------%
 
+ \node[#1] (FS_LOC) {};
+ \node[above = 0.5cm of FS_LOC] (root) {/};
+ \node[below right = 0.15cm and 0.35cm of root.center] (bin) {bin};
+ \node[below = 0.15cm of bin] (dev) {dev};
+ \node[below = 0.15cm of dev] (usr) {usr};
 
+ \path[link, to path={|- (\tikztotarget)}]
+    (root.south) edge (bin.west)
+    (root.south) edge (dev.west)
+    (root.south) edge (usr.west);
 
+ \node[fit=(root)(bin)(dev)(usr)] (FS) {};
+}

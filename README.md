@@ -9,8 +9,7 @@ For linux users, generate HTML/CSS files from Latex files by running:
 ## Dependencies
 Still working on the full dependency list.
 
+- texlive
+- texlive-tikz-dependency
+- texlive-tex4ht
 - inkscape 
-- htlatex
-- pdflatex
-- tex
-
