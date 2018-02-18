@@ -591,19 +591,19 @@
                    style="fill:none;stroke:#000000;stroke-width:0.31878999;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
                    d="M -1.19551,1.59401 C -1.09587,0.99626 0,0.09961 0.29886,0 0,-0.09961 -1.09587,-0.99626 -1.19551,-1.59401" /></g></g><g
                id="g512"><g
-                 transform="rotate(90,-28.9705,19.3605)"
+                 transform="rotate(90,-31.1845,21.5745)"
                  id="g514"><g
                    id="g516"><g
-                     transform="translate(-54.322,-91.648)"
+                     transform="translate(-54.322,-96.076)"
                      id="g518"><text
                        id="text522"
                        style="font-variant:normal;font-weight:normal;font-size:9.96259975px;font-family:CMR10;-inkscape-font-specification:CMR10;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
-                       transform="matrix(1,0,0,-1,54.322,91.648)"><tspan
+                       transform="matrix(1,0,0,-1,54.322,96.076)"><tspan
                          id="tspan520"
                          y="0"
-                         x="0 5.5352206 10.795473 14.9439 19.923208 24.350588 31.580446 36.561745 40.436199 44.310658 49.291958 53.440384">dockerattach</tspan></text>
+                         x="0 5.5352206 10.795473 14.9439 19.923208 24.350588 31.580446 36.007824 41.266087 45.693466">dockerexec</tspan></text>
 <g
-                       transform="translate(54.322,91.648)"
+                       transform="translate(54.322,96.076)"
                        id="g524" /></g></g><g
-                   transform="translate(9.61,-48.331)"
+                   transform="translate(9.61,-52.759)"
                    id="g526" /></g></g></g></g></g></g></g></svg>

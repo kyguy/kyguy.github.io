@@ -24,11 +24,12 @@
 \vspace{1pc}
 
 \section{Overview}
-\hspace{3pc} Openshift is a container platform which facilitates the development and hosting of software applications across
-distributed systems. Whether these distributed systems be physical hosts, virtual machines or any combination of 
-both, OpenShift reaps the benefits of available computing resources while abstracting the unattractive details 
-of managing it. 
+\hspace{3pc} Openshift is a \href{https://kyguy.github.io/src/containers/containers.html}{container} platform which facilitates the development and management of software applications across
+distributed systems. Whether the components of these distributed systems be physical hosts, virtual machines or a combination of 
+both, OpenShift reaps the benefits of available computing resources without the complexity typically tied with computing power. 
 
+%\iffalse
+%\fi
 \begin{figure}
 \begin{tikzpicture}[node distance = 1cm and 0cm]
   \tikzstyle{HYP_COLOR} = [fill=gray!50!black]
@@ -49,9 +50,9 @@ of managing it.
   \node[OS_LAYER, minimum width = 1.5 , above = 0.5cm and 0.0cm of OS1_USR2.south] (OS1_label2) {\scriptsize OpenShift};
 
   %----------------------------------------------%
-  %\openshift{OS2}{3.2}{right = 0cm and 2cm of OS0}{}
- 
+  %\openshift{OS2}{3.2}{right = 0cm and 2cm of OS0}{} 
   %----------------------------------------------%
+
   % HOST 3
   \openshift{OS2}{3.8}{ above right = -1.5cm and 2.5cm of OS0}{}
   \node[USR_COLOR, layer,minimum height = 2.5cm,
@@ -112,74 +113,178 @@ of managing it.
 
   \node[above = 0.00cm of PRJ1] (PRJ_LABEL)  {Project};
   %\path[->] (PRJ_LABEL) edge (PRJ1);
-
 \end{tikzpicture}
+\caption{OpenShift Cluster}
 \end{figure}
 
-%Development within the OpenShift environment begins and ends with virtual computer hosts known as pods. This is where
-%programmers interact with and host code. The computing resources backing these pods is determined by the OpenShift cluster.
-%Pods are indivisible and must reside on one machine; however, this is not the case with groups of pods known as a project.
+%This document will briefly overview:
+%\begin{enumerate}[(1)]
+%  \item API Server
+%  \item Pods
+%  \item Images
+%  \item Service accounts
+%\end{enumerate}
 
-\section{Core Components}
-Within the OpenShift environment, programmers isolate their programs into virtual instances known
-as pods. Pods emulate the behavoir of a programmer's physical or virtual host by leveraging aspects 
-of the host's kernel. A pod consists of a group of processes that can share disk space. A pod is 
-assigned its own ip address. 
-%The whole purpose of container platforms is to relief programmers of mundane task of environmental upkeep. 
-%\iffalse
-%Distributed openshift and pod diagram
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Core Components
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Core Components}
+
+\hspace{3pc} The OpenShift tools and concepts help plan how an application should behave when its online: when it should scale, where it 
+should save its data, how many application backups are benched, etc. Then, the OpenShift application carries out the plan's 
+execution. 
+
+\subsection{Pods}
+To run on OpenShift, software applications must be formatted onto a virtual host known as a pod.
+This virtual compute unit is essentially just a group of \href{https://kyguy.github.io/src/containers/containers.html}{containers}
+or isolated linux processes, that can share disk and networking space. At a higher level of abstaction, a pod acts as a single
+computer node, where applications can be built and hosted.
+
+\begin{figure}
+\begin{tikzpicture}
+
+ \pod{p1}{0.5}{1}{2}{}
+ \node[above = 0cm of p1.north]  (POD_LABEL) {Pod};
+ 
+ \node[below = 0.75cm of p1.south] (C_LABEL) {Containers};
+ \node[below = 0.05cm of p1C00.south] (C_CONN0) {};
+ \node[below = 0.05cm of p1C01.south] (C_CONN1) {};
+ 
+  \path[link, to path={|- (\tikztotarget)}]
+   (C_LABEL) edge (C_CONN0.center)
+   (C_LABEL) edge (C_CONN1.center)
+   (C_CONN0.center) edge (p1C00.south)
+   (C_CONN1.center) edge (p1C01.south);
+
+  \filesystem{right = 0cm and 1.5cm of p1.east}
+  \node[above = -0.2cm of FS] (FS_LABEL) {Filesystem};
+
+  \tikzstyle{d_seg_color} = [fill=black!10]
+  \tikzstyle{d_seg} = [cylinder, d_seg_color,draw, shape border rotate=90, thin, minimum width = 1.2cm, minimum height = 1.0cm]
+  \node[d_seg, left = 1.5cm of p1.west] (DISK) {};
+  \node[above = 0cm of DISK.north] (DISK_LABEL) {Storage};
+
+  \node[above = 1cm of p1.north] (ADDRESS) {172.17.0.2};
+  \node[above = 0cm of ADDRESS.north] (ADDRESS_LABEL) {IP address};
+ 
+\end{tikzpicture}
+\caption{Anatomy of a Pod}
+\end{figure}
+
+Pods provide the advantage of isolating applications running across a cluster. This helps
+better utilize compute nodes and avoid environment problems like conflicting libraries or reused
+port numbers. However, the core strength of pods revolves arounds OpenShift's ability to manipulate them.
+Once in a container format, a pod application can be updated once and have its changes automatically distributed 
+amongst the nodes running in a cluster.                                                         
+
+\subsection{Images}
+
+An image is a snapshot of a \href{https://kyguy.github.io/src/containers/containers.html}{container} that can be instantiated
+to create a new containers. 
+%When transporting an application to another location, the container is saved into an image and uploaded
+%to a container registry, where it is subsequently pulled from into the destination's local registry. OpenShift clusters run their own 
+%container registries and sometimes pull from external registries to build its applications.
+
+\begin{figure}
+\begin{tikzpicture}
+
+  \registry{R0}{0.7}{3}{4}{} %location  
+  \cube{C1}{0.7}{black}{right = 0cm and 2cm of R0};
+  \node[above = 0.25cm of C1_north] (IMAGE_LABEL) {Image};
+  
+  %\node[container, right = 0cm and 2cm of C1_east] (IMAGE) {};
+  %\draw[->] (R0C13.east) -- (C1.west);
+  \draw[->] (R0.east) -- (C1.west);
+  %\draw[->] (C1_east) -- (C);
+\end{tikzpicture}
+\caption{Registries and Images}
+\end{figure}
+
+\subsection{API Server}
+
+All components of an OpenShift cluster, internal and external, communicate through a Hypertext 
+Transfer Protocol (\textbf{HTTP}) interface. Within every OpenShift cluster resides one application programming 
+interface (\textbf{API}) server which interprets the HTTP commands and executes the respective 
+operations server side. 
+
+%Distributed openshift and pod diagram
+%-----------------------------------------------%
+% Core Components Diagram
+%-----------------------------------------------%
 \begin{figure}
 \begin{tikzpicture}[node distance = 1cm and 0cm]
   % OpenShift layer
-  \tikzstyle{OS_LAYER} = [app_stack, OS_COLOR, minimum width = 14cm, minimum height = 6.0cm]
+  \tikzstyle{OS_LAYER} = [app_stack, OS_COLOR, minimum width = 11cm, minimum height = 6.0cm]
+  \tikzstyle{OS_CLIENT} = [app_stack, OS_COLOR, minimum width = 3cm, minimum height = 2.0cm]
   \tikzstyle{image} = [c_full, fill=white!20, opacity=0.5]
   \tikzstyle{mw} = [minimum width=15.0cm]
   \tikzstyle{mh} = [minimum height=7.5cm]
   \tikzstyle{link} = [-, thick, opacity=0.3]
+  \xdef\pLabel{PRJ0}
+
 
   \node[USR_LAYER, mw, mh] (USR) {};
   \node[KRN_LAYER, mw, below = 0cm and 0cm of USR.south] (KRN) {Kernel};
   \node[HW_LAYER,  mw, minimum height = 2cm, below = 0cm and 0cm of KRN.north, anchor=north] (HW) {Hardware};
 
-  \node[OS_LAYER, above=1cm of USR.south] (OS) {\Large \color{white} OpenShift};
-  \node [below = 0cm of HW.south] (HM) {Physical Machine};
+  \node[OS_LAYER, left = 0cm and -4cm of USR.center] (OS) {};
+  \node[above= 0.1cm of OS.south] (OS_LABEL) {\color{white} OpenShift Server};
+  
+  \node [below = 0cm of  HW.south] (HM) {Physical Machine};
   \path[->, thin, to path={-| (\tikztotarget)}]
     (HM.west) edge (HW.south west)
     (HM.east) edge (HW.south east);
 
-  \node[box, minimum height = 1.75cm, minimum width = 5.5cm, DK_COLOR, below left = 1.0cm and 1.15cm of OS.center,
+  \node[box, minimum height = 1.75cm, minimum width = 5.25cm, DK_COLOR, below left= 0.25cm and -1.25cm of OS.center,
        label={[label distance=-0.65cm]270:Container Engine}] (DK) {};
   \containers{0}{8}{8}{above left= 0.75cm and 2cm of DK.south};
   
-  \project{PRJ0}{0.5}{8}{4}{above left = 2.00cm and 0.0cm of DK}
-  \project{PRJ0}{0.5}{8}{4}{above left = 2.00cm and 0.0cm of DK}
-  \node[below = 0.0cm of PRJ0] (PRJ0_LABEL) {Project};
+  \project{\pLabel}{0.5}{8}{4}{above left = 1.50cm and 0.0cm of DK}
+  \project{\pLabel}{0.5}{8}{4}{above left = 1.50cm and 0.0cm of DK}
 
-  \node[above right= -0.25cm and 0.40cm of PRJ0P3] (POD_LABEL) {Pod};
-  \path[link, ->] (POD_LABEL) edge (PRJ0P3);
+  \node[right= 3.0cm of OS.center, label={[align=center]center:API\\Server}] (OAPI) {
+    \begin{tikzpicture}
+      \fill[thick, white, opacity=0.5] \gear{8}{1.0}{0.9}{10}{2}{0.3};
+    \end{tikzpicture}};
 
-  \xdef\dis{0.75}
-  \node[below = 2 cm of PRJ0P0C00] (CONN0_0) {};
-  \node[below = 1.75 cm of PRJ0P0C01] (CONN1_0) {};
-  \node[below = 1.5 cm of PRJ0P1C00] (CONN2_0) {};
-  \node[below = 2 cm of PRJ0P1C01] (CONN3_0) {};
-  \node[below = 2 cm of PRJ0P2C00] (CONN4_0) {};
-  \node[below = 1.75 cm of PRJ0P2C01] (CONN5_0) {};
-  \node[below = 1.75 cm of PRJ0P3C00] (CONN6_0) {};
-  \node[below = 2 cm of PRJ0P3C01] (CONN7_0) {};
+  \node[right= 0cm and 1cm of \pLabel.east] () {};
+  \node[OS_CLIENT, below right = 1.0cm and 4.25cm of USR.center, label={[align=center,]center:OpenShift\\\color{white}Client}] (OS_CLIENT) {};
+  
+  \tikzstyle{d_seg_color} = [fill=black!10]
+  \tikzstyle{d_seg} = [cylinder, d_seg_color,draw, shape border rotate=90, thin, minimum width = 1.7cm, minimum height = 1.5cm]
+  \node[d_seg, below= 3.90cm of OAPI.south] (D0) {};
+  \node[below= 0cm of D0.center ] (D0_label) {Disk};
+
+  %--------------------
+  % API CONNECTIONS
+  %--------------------
+  \node[right = 0cm and 1cm of PRJ0.east] (API_NORTH_CONN) {};
+  \path[link, line width=2.8pt, white, to path={|- (\tikztotarget)}]
+    (OAPI.north) edge (API_NORTH_CONN.center)
+    (API_NORTH_CONN.center) edge (PRJ0.east)
+    (OAPI.east) edge (USR.east)
+    (OAPI.south) edge (D0.north)
+    (OS_CLIENT.north) edge (OAPI.340);
+
+  \xdef\dis{0.05}
+  \node[below = 2.00 cm of PRJ0P0C00] (CONN0_0) {};
+  \node[below = 1.50 cm of PRJ0P0C01] (CONN1_0) {};
+  \node[below = 1.25 cm of PRJ0P1C00] (CONN2_0) {};
+  \node[below = 1.00 cm of PRJ0P1C01] (CONN3_0) {};
+  \node[below = 1.50 cm of PRJ0P2C00] (CONN4_0) {};
+  \node[below = 1.50 cm of PRJ0P2C01] (CONN5_0) {};
+  \node[below = 1.50 cm of PRJ0P3C00] (CONN6_0) {};
+  \node[below = 2.00 cm of PRJ0P3C01] (CONN7_0) {};
 
   \path[link, to path={|- (\tikztotarget)}]
-    (C0_0.north) edge (CONN0_0.center)
+    (CONN0_0.center) edge (C0_0.west)
     (C1_0.north) edge (CONN1_0.center)
-    (C2_0.north) edge (CONN2_0.center)
-    (C3_0.north) edge (CONN3_0.center)
-    (C4_0.north) edge (CONN4_0.center)
+    (C2_0.north) edge (CONN4_0.center)
+    (C3_0.north) edge (CONN2_0.center)
+    (C4_0.north) edge (CONN3_0.center)
     (C5_0.north) edge (CONN5_0.center)
     (C6_0.north) edge (CONN6_0.center)
-    (C7_0.north) edge (CONN7_0.center);
+    (CONN7_0.center) edge (C7_0.east);
 
   \path[link, ->]
     (CONN0_0.center) edge (PRJ0P0C00.south)
@@ -191,48 +296,85 @@ assigned its own ip address.
     (CONN6_0.center) edge (PRJ0P3C00.south)
     (CONN7_0.center) edge (PRJ0P3C01.south);
 
-
-  %\path[link, ->] (PRJ0P3.east) edge (P0);
-  \node[right = 0.0cm and 3.55cm of PRJ0P3.10] (CONN0_P3) {};
-  \node[right = 0.0cm and 3.25cm of PRJ0P3.350](CONN1_P3) {};
-
-  \tikzstyle{d_seg_color} = [fill=black!10]
-  \tikzstyle{d_seg} = [cylinder, d_seg_color,draw, shape border rotate=90, thin, minimum width = 1.7cm, minimum height = 1.5cm]
-
-  \node[d_seg, right= 0cm and 2cm of HW.center] (D0) {};
-  \node[below= 0cm of D0.center ] (D0_label) {Disk};
-
-  \tikzstyle{link} = [-, thick, white, opacity=0.9]
-  \path[link]  (PRJ0P3.10) edge (CONN0_P3.center);
-  \path[link, ->]  (CONN0_P3.center) edge (D0.80);
-  \path[link, <-]  (PRJ0P3.350) edge (CONN1_P3.center);
-  \path[link]  (CONN1_P3.center) edge (D0.100);
+  \node[right = 0.0cm and 3.00cm of PRJ0P3.10] (CONN0_P3) {};
+  \node[right = 0.0cm and 2.75cm of PRJ0P3.350](CONN1_P3) {};
 
   \tikzstyle{port} = [rectangle, minimum height = 0.05cm, minimum width = 4cm, fill=white]
-  %\node[port, right= 0.0cm and 0cm of PRJ0P3.east]  (PORT0) {\tiny 101010101010101011010101010101010};
   \node[port, rotate=90, minimum width = 1cm, above= 0.0cm and 1cm of PRJ0P0.north, anchor=west] (PORT0) {\tiny 010101010};
   \node[port, rotate=90, minimum width = 1cm, above= 0.0cm and 1cm of PRJ0P1.north, anchor=west] (PORT1) {\tiny 010101010};
-  \node[port, rotate=90, minimum width = 1cm, above= 0.0cm and 1cm of PRJ0P2.north, anchor=west] (PORT2) {\tiny 010101010};
-  \node[port, rotate=90, minimum width = 1cm, above= 0.0cm and 1cm of PRJ0P3.north, anchor=west] (PORT3) {\tiny 010101010};
-  %\node[above right = 0cm and -0.85cm of PORT0] (PORT0_LABEL) {\scriptsize Port};
+  %\node[port, rotate=90, minimum width = 1cm, above= 0.0cm and 1cm of PRJ0P2.north, anchor=west] (PORT2) {\tiny 010101010};
+  %\node[port, rotate=90, minimum width = 1cm, above= 0.0cm and 1cm of PRJ0P3.north, anchor=west] (PORT3) {\tiny 010101010};
+
   \node[rotate=90, above right = -0.7cm and 0.0cm of PORT0] (PORT0_LABEL) {\scriptsize Port};
   \node[rotate=90, above right = -0.7cm and 0.0cm of PORT1] (PORT1_LABEL) {\scriptsize Port};
-  \node[rotate=90, above right = -0.7cm and 0.0cm of PORT2] (PORT1_LABEL) {\scriptsize Port};
-  \node[rotate=90, above right = -0.7cm and 0.0cm of PORT3] (PORT3_LABEL) {\scriptsize Port};
+  %\node[rotate=90, above right = -0.7cm and 0.0cm of PORT2] (PORT1_LABEL) {\scriptsize Port};
+  %\node[rotate=90, above right = -0.7cm and 0.0cm of PORT3] (PORT3_LABEL) {\scriptsize Port};
+
+  %\user{user1}{}{above right = 1.65cm and 3.5 cmof OS.center}
+  %\user{user2}{}{right= 0cm and 1cm of user1}
+  %\user{user3}{}{right= 0cm and 1cm of user2}  
+
+  %\tikzstyle{sa} = [fill=white, opacity=0.4, minimum width = 3.5cm];
+  
+  %\node[sa, fit=(user1_FIT)(user2_FIT)(user3_FIT), draw] (SA) {};
+  %\node[above = 0cm of SA.north] (SA_LABEL) {Service Account};
+  %\node[port, sa, left = 0cm and 0.0cm of SA.west] () {};
+  
+  %\node[below = 0.05cm of SA.south] (USER_LABEL) {User};
+  %\path[link, ->] (USER_LABEL) edge (user2);
+   
+  %\node[rectangle, fill= white, above right= of OS] (SA) {};
+  %\user{user1}{}{}
+
 \end{tikzpicture}
-\caption{Core Components}
+\caption{API Server}
 \end{figure}
 
-%\section{Images}
-%The most important component of container technology is what is known as an container image. If a container application is a cake 
-%then the image is the recipe. One image can be instantiated multiple times make identical container applications just as a recipe 
-%can be followed to make as many cakes as a programmer desires.
+This means that any programming language can manipulate an OpenShift cluster so long as that
+language can send HTTP requests. However, OpenShift already provides client tools for 
+common operations. In the following example, the client command, (\textbf{oc whoami -t}), is used to 
+retrieve the authorization token to take a look at the HTTP interface, or Representational 
+State Transfer (\textbf{REST}) API:    
 
-%\begin{figure}
-%\begin{tikzpicture}
-%  \cube{1}{2}{black}{};
-%\end{tikzpicture}
-%\end{figure}
+\begin{lstlisting}[style=shell]
+# After logging into a local openshift cluster ( oc login https:localhost:8443 )
+curl -X GET -H "Authorization Bearer $(oc whoami -t)" https://localhost:8443/oapi/v1 --insecure
+{
+  "kind": "APIResourceList",
+  "groupVersion": "v1",
+  "resources": [
+    {
+      "name": "appliedclusterresourcequotas",
+      "namespaced": true,
+      "kind": "AppliedClusterResourceQuota",
+      "verbs": [
+        "get",
+        "list"
+      ]
+    }, 
+    {
+      "name": "buildconfigs",
+      "namespaced": true,
+      "kind": "BuildConfig",
+      "verbs": [
+        "create",
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "update",
+        "watch"
+      ]
+    },
+...
+\end{lstlisting}
+
+%\begin{enumerate}[(1)]
+% \item service accounts
+%\end{enumerate}
+%In or
+%A service account is like a low privledged user
 
 %OpenShift keeps all of its recipes in a recipe cubby know as a registry. When a programmer wants a head start on their application,
 %or write a new recipe, a image is chosen as the baseline
@@ -255,6 +397,7 @@ assigned its own ip address.
 %  \item Templates
 %\end{enumerate}
 
+\iffalse
 \begin{figure}
 \begin{tikzpicture}[node distance = 1cm and 0cm]
   % OpenShift layer
@@ -304,9 +447,9 @@ assigned its own ip address.
 
  % \path[->, thick, opacity=0.3] (CO_north) edge (T0_label);
 
-
 \end{tikzpicture}
 \end{figure}
+\fi
 
 %
 %
@@ -339,7 +482,5 @@ assigned its own ip address.
 ---------------------------------------------------------------------------------------------------- \\
  WIP \\
 ---------------------------------------------------------------------------------------------------- \\
-
-
 \end{document}
 

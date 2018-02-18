@@ -102,7 +102,7 @@ drwxrwxr-x. 2 jboss root  26 Mar  1 14:36 .m2
       \node [align=left, text width=10.0cm,below= 0.5cm of SHELL.south] (SHELL_DESC) {Connect to containers from your host machine using the Moby client then build your applications in an enclosed environment.};
       \node[above=0cm and 0cm of SHELL] (SHELL_LABEL) {Container Shell Session};
       \path[->, thin] (C3_RAISED) edge (SHELL);
-      \draw[->, thin] (C3_0) -- node [above, rotate=90] {docker attach} (C3_RAISED);
+      \draw[->, thin] (C3_0) -- node [above, rotate=90] {docker exec} (C3_RAISED);
 \end{tikzpicture}
 \caption{Connecting to Containers from Host Machine} 
 \end{figure}
