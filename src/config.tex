@@ -12,6 +12,9 @@
 \usetikzlibrary{calc}
 \usetikzlibrary{automata,positioning,external,shapes,arrows,chains,matrix,scopes,backgrounds}
 \usepackage{enumerate}
+\usepackage{minted}
+\usemintedstyle{monokai}
+\usepackage{enumitem}
 % The following is for tikz externalization configuration which allows
 % tikZ diagrams to render correctly while being processed by htlatex 
 % http://tex.stackexchange.com/questions/158551/using-htlatex-with-tikz-dependency#158921
@@ -41,6 +44,7 @@
 \renewcommand\thesection{}
 %\renewcommand\thesubsection{\@arabic\c@section.\@arabic\c@subsection}
 \renewcommand\thesubsection{}
+\renewcommand\thesubsubsection{}
 \makeatother
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -92,8 +96,6 @@
 \tikzstyle{HW_LAYER}  = [core_stack, HW_COLOR, below of=KRN]
 \tikzstyle{DK_LAYER}  = [user_stack, DK_COLOR]
 \tikzstyle{HM_LAYER}  = [user_stack, HM_COLOR]
-
-%%% NEW DEFS
 \tikzstyle{OS_LAYER2} = [app_stack, OS_COLOR,fill=black!50!white, label={[label distance=-0.75cm]270:OpenShift}]
 
 \tikzstyle{c_temp} = [layer,minimum width=0.5cm,minimum height=0.5cm]
@@ -111,39 +113,23 @@
 \tikzstyle{link} = [-, thick, opacity=0.3]
 
 \definecolor{keyword}{rgb}{0,0,0}
-\definecolor{comment}{rgb}{0,0,0}
-\definecolor{string}{rgb}{0,0,0}
+\definecolor{comment}{rgb}{0,0,8}
+\definecolor{string}{rgb}{0,7,0}
 
-% lstlisting configs for code syntax formatting
-\lstdefinestyle{Java} {
-  frame=tb,
-  language=Java,
-  aboveskip=3mm,
-  belowskip=3mm,
-  showstringspaces=false,
-  columns=flexible,
-  basicstyle={\large\ttfamily},
-  numbers=none,
-  numberstyle=\textcolor{gray},
-  keywordstyle=\textcolor{red!75},
-  commentstyle=\textcolor{dkgreen},
-  stringstyle=\textcolor{blue},
-  moredelim=[is][\textcolor{black!75}]{|}{|},
-  breaklines=false,
-  breakatwhitespace=true,
-  tabsize=3,
-  belowskip=-0.5em %\baselineskip
+\lstset {
+  %basicstyle=\ttfamily,
+  keywordstyle=\color{keyword},
+  commentstyle=\color{comment},
+  stringstyle=\color{string},
+  breaklines=true,
+  literate={~} {$\sim$}{1}
 }
 
-\lstdefinestyle{shell} {
-  basicstyle=\ttfamily,
-  showstringspaces=false,
-  keywordstyle=\textcolor{keyword},
-  commentstyle=\textcolor{comment},
-  stringstyle=\textcolor{string},
-  belowskip=-\baselineskip %-40pt %\baselineskip
-}
-
+%Minted configuration
+\xdef\language{python}
+\xdef\style{monokai}
+%\begin{minted}[style=\style]{\language}
+%\end{minted}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Tikz Functions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -636,3 +622,4 @@
 
  \node[fit=(root)(bin)(dev)(usr)] (FS) {};
 }
+

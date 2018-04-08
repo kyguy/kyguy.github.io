@@ -1,30 +1,29 @@
 #!/bin/bash
-#
 # Generates HTML files in out directory from Latex files
-# in src directory
 set -e
 
-PID=$!
-trap 'kill -9  $(PID)' TERM INT
-
-SRC=src
-OUT=out
 BASE=$(pwd)
-JUNK="*.log *.4ct *.4tc *.aux *.auxlock *.dvi *.dpth *.log *.md5 *.lg *.idv *.out *.tmp *.xref *.pdf *.fls *.fdb_latexmk"
+TEX4HT_CONFIG="$BASE/src/gen.cfg,xhtml,mathml,utf8"
 
 files=(home hacking_openshift openshift containers testsuite)
 
-
-function build {
-  src_path=$BASE/$SRC/$1
-  src_file=$BASE/$SRC/$1/$1.tex
-  set -x
-  cd $src_path && rm -f $(ls -I "*.tex" )
-  cd $src_path && pdflatex  -shell-escape -output-directory=$src_path/ $src_file
-  cd $src_path && htlatex $src_file "$BASE/$SRC/gen.cfg,xhtml" "" -d$src_path/ 
-  firefox $src_path/$1.html &
-  cd $src_path && rm $(ls -I "*.tex" -I "*.svg" -I "*.html" -I "*.css" )
+function cleanup() {
+  rm -rf _minted*
+  rm $(ls -I "*.tex" -I "*.svg" -I "*.html" -I "*.css")
 }
+
+function build() {
+  src_path=$BASE/src/$1
+  src_file=$src_path/$1.tex
+
+  cd $src_path
+  pdflatex  -shell-escape -output-directory=$src_path/ $src_file
+  htlatex $src_file "$TEX4HT_CONFIG" "" -d$src_path/ " -shell-escape"
+  cleanup
+  firefox $1.html &
+}
+
+trap 'cleanup' TERM INT EXIT
 
 if [ "$1" == "all" ]; then
   for item in ${files[*]}
@@ -34,5 +33,6 @@ if [ "$1" == "all" ]; then
 else
   build $1
 fi
+
 
 
