@@ -1,60 +1,24 @@
 <?xml version="1.0" encoding="iso-8859-1" ?> 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">  
-<!--http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd-->  
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" 
+"http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd" > 
 <html xmlns="http://www.w3.org/1999/xhtml"  
 > 
-<head> <title></title> 
+<head>   <title></title> 
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" /> 
 <meta name="generator" content="TeX4ht (http://www.tug.org/tex4ht/)" /> 
 <meta name="originator" content="TeX4ht (http://www.tug.org/tex4ht/)" /> 
-<!-- xhtml,html --> 
+<!-- xhtml,mathml,utf8,html --> 
 <meta name="src" content="openshift.tex" /> 
 <link rel="stylesheet" type="text/css" href="openshift.css" /> 
 </head><body 
 >
    <div  
-class="centerline">                                          <span 
-class="cmcsc-10x-x-120">O<span 
-class="small-caps">p</span><span 
-class="small-caps">e</span><span 
-class="small-caps">n</span>S<span 
-class="small-caps">h</span><span 
-class="small-caps">i</span><span 
-class="small-caps">f</span><span 
-class="small-caps">t</span></span>                               </div>
+class="centerline">                                             <span style=" font-size: 26px; font-family:serif; ">OpenShift</span>                            </div>
 <div  
-class="centerline">                <span 
-class="cmcsc-10">A<span 
-class="small-caps">r</span><span 
-class="small-caps">c</span><span 
-class="small-caps">h</span><span 
-class="small-caps">i</span><span 
-class="small-caps">t</span><span 
-class="small-caps">e</span><span 
-class="small-caps">c</span><span 
-class="small-caps">t</span><span 
-class="small-caps">u</span><span 
-class="small-caps">r</span><span 
-class="small-caps">e</span> <span 
-class="small-caps">f</span><span 
-class="small-caps">o</span><span 
-class="small-caps">r</span> <span 
-class="small-caps">t</span><span 
-class="small-caps">h</span><span 
-class="small-caps">e</span> L<span 
-class="small-caps">a</span><span 
-class="small-caps">y</span><span 
-class="small-caps">p</span><span 
-class="small-caps">e</span><span 
-class="small-caps">r</span><span 
-class="small-caps">s</span><span 
-class="small-caps">o</span><span 
-class="small-caps">n</span></span>                 </div>
+class="centerline">                Architecture for the Layperson                 </div>
 <div  
 class="centerline">               <a 
-href="https://github.com/openshift/origin" class="url" ><span 
-class="cmtt-10">https://github.com/openshift/origin</span></a>               </div>
+href="https://github.com/openshift/origin" class="url" >https://github.com/openshift/origin</a>               </div>
    <h3 class="sectionHead"><span class="titlemark">  </span> <a 
  id="x1-1000"></a>Overview</h3>
 <p>&#x00A0;&#x00A0;&#x00A0;            Openshift is a <a 
@@ -163,10 +127,8 @@ class="content">Registries and Images</span></div><!--tex4ht:label?: x1-4001r3 -
    <h4 class="subsectionHead"><span class="titlemark">   </span> <a 
  id="x1-5000"></a>API Server</h4>
 <p>All components of an OpenShift cluster, internal and external, communicate through
-a Hypertext Transfer Protocol (<span 
-class="cmbx-10">HTTP</span>) interface. Within every OpenShift
-cluster resides one application programming interface (<span 
-class="cmbx-10">API</span>) server which
+a Hypertext Transfer Protocol (<b>HTTP</b>) interface. Within every OpenShift
+cluster resides one application programming interface (<b>API</b>) server which
 interprets the HTTP commands and executes the respective operations server
 side.
    </p> 
@@ -194,407 +156,43 @@ class="content">API Server</span></div><!--tex4ht:label?: x1-5001r4 -->
 <p>   This means that any programming language can manipulate an OpenShift cluster
 so long as that language can send HTTP requests. However, OpenShift already
 provides client tools for common operations. In the following example, the client
-command, (<span 
-class="cmbx-10">oc whoami -t</span>), is used to retrieve the authorization token to take a
-look at the HTTP interface, or Representational State Transfer (<span 
-class="cmbx-10">REST</span>)
+command, (<b>oc whoami -t</b>), is used to retrieve the authorization token to take a
+look at the HTTP interface, or Representational State Transfer (<b>REST</b>)
 API:
    </p> 
 <!--l. 339-->
-   <div class="lstlisting" id="listing-1"><span class="label"><a 
- id="x1-5002r1"></a></span><span 
-class="cmtt-10">#</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">After</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">logging</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">into</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">a</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">local</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">openshift</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">cluster</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">(</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">oc</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">login</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">https</span><span 
-class="cmtt-10">:</span><span 
-class="cmtt-10">localhost</span><span 
-class="cmtt-10">:8443</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">)</span><span 
-class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
- id="x1-5003r2"></a></span><span 
-class="cmtt-10">curl</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">-</span><span 
-class="cmtt-10">X</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">GET</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">-</span><span 
-class="cmtt-10">H</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">"</span><span 
-class="cmtt-10">Authorization</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">Bearer</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">$</span><span 
-class="cmtt-10">(</span><span 
-class="cmtt-10">oc</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">whoami</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">-</span><span 
-class="cmtt-10">t</span><span 
-class="cmtt-10">)"</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">https</span><span 
-class="cmtt-10">://</span><span 
-class="cmtt-10">localhost</span><span 
-class="cmtt-10">:8443/</span><span 
-class="cmtt-10">oapi</span><span 
-class="cmtt-10">/</span><span 
-class="cmtt-10">v1</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">--</span><span 
-class="cmtt-10">insecure</span><span 
-class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
- id="x1-5004r3"></a></span><span 
-class="cmtt-10">{</span><span 
-class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
- id="x1-5005r4"></a></span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">"</span><span 
-class="cmtt-10">kind</span><span 
-class="cmtt-10">":</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">"</span><span 
-class="cmtt-10">APIResourceList</span><span 
-class="cmtt-10">",</span><span 
-class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
- id="x1-5006r5"></a></span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">"</span><span 
-class="cmtt-10">groupVersion</span><span 
-class="cmtt-10">":</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">"</span><span 
-class="cmtt-10">v1</span><span 
-class="cmtt-10">",</span><span 
-class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
- id="x1-5007r6"></a></span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">"</span><span 
-class="cmtt-10">resources</span><span 
-class="cmtt-10">":</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">[</span><span 
-class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
- id="x1-5008r7"></a></span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">{</span><span 
-class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
- id="x1-5009r8"></a></span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">"</span><span 
-class="cmtt-10">name</span><span 
-class="cmtt-10">":</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">"</span><span 
-class="cmtt-10">appliedclusterresourcequotas</span><span 
-class="cmtt-10">",</span><span 
-class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
- id="x1-5010r9"></a></span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">"</span><span 
-class="cmtt-10">namespaced</span><span 
-class="cmtt-10">":</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">true</span><span 
-class="cmtt-10">,</span><span 
-class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
- id="x1-5011r10"></a></span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">"</span><span 
-class="cmtt-10">kind</span><span 
-class="cmtt-10">":</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">"</span><span 
-class="cmtt-10">AppliedClusterResourceQuota</span><span 
-class="cmtt-10">",</span><span 
-class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
- id="x1-5012r11"></a></span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">"</span><span 
-class="cmtt-10">verbs</span><span 
-class="cmtt-10">":</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">[</span><span 
-class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
- id="x1-5013r12"></a></span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">"</span><span 
-class="cmtt-10">get</span><span 
-class="cmtt-10">",</span><span 
-class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
- id="x1-5014r13"></a></span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">"</span><span 
-class="cmtt-10">list</span><span 
-class="cmtt-10">"</span><span 
-class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
- id="x1-5015r14"></a></span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">]</span><span 
-class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
- id="x1-5016r15"></a></span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">},</span><span 
-class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
- id="x1-5017r16"></a></span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">{</span><span 
-class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
- id="x1-5018r17"></a></span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">"</span><span 
-class="cmtt-10">name</span><span 
-class="cmtt-10">":</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">"</span><span 
-class="cmtt-10">buildconfigs</span><span 
-class="cmtt-10">",</span><span 
-class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
- id="x1-5019r18"></a></span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">"</span><span 
-class="cmtt-10">namespaced</span><span 
-class="cmtt-10">":</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">true</span><span 
-class="cmtt-10">,</span><span 
-class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
- id="x1-5020r19"></a></span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">"</span><span 
-class="cmtt-10">kind</span><span 
-class="cmtt-10">":</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">"</span><span 
-class="cmtt-10">BuildConfig</span><span 
-class="cmtt-10">",</span><span 
-class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
- id="x1-5021r20"></a></span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">"</span><span 
-class="cmtt-10">verbs</span><span 
-class="cmtt-10">":</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">[</span><span 
-class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
- id="x1-5022r21"></a></span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">"</span><span 
-class="cmtt-10">create</span><span 
-class="cmtt-10">",</span><span 
-class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
- id="x1-5023r22"></a></span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">"</span><span 
-class="cmtt-10">delete</span><span 
-class="cmtt-10">",</span><span 
-class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
- id="x1-5024r23"></a></span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">"</span><span 
-class="cmtt-10">deletecollection</span><span 
-class="cmtt-10">",</span><span 
-class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
- id="x1-5025r24"></a></span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">"</span><span 
-class="cmtt-10">get</span><span 
-class="cmtt-10">",</span><span 
-class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
- id="x1-5026r25"></a></span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">"</span><span 
-class="cmtt-10">list</span><span 
-class="cmtt-10">",</span><span 
-class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
- id="x1-5027r26"></a></span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">"</span><span 
-class="cmtt-10">patch</span><span 
-class="cmtt-10">",</span><span 
-class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
- id="x1-5028r27"></a></span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">"</span><span 
-class="cmtt-10">update</span><span 
-class="cmtt-10">",</span><span 
-class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
- id="x1-5029r28"></a></span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">"</span><span 
-class="cmtt-10">watch</span><span 
-class="cmtt-10">"</span><span 
-class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
- id="x1-5030r29"></a></span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">]</span><span 
-class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
- id="x1-5031r30"></a></span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">&#x00A0;</span><span 
-class="cmtt-10">},</span><span 
-class="cmtt-10">&#x00A0;</span><br /><span class="label"><a 
- id="x1-5032r31"></a></span><span 
-class="cmtt-10">...</span>
+<div class="lstlisting" id="listing-1"><span class="label"><a 
+ id="x1-5002r1"></a></span>#&#x00A0;After&#x00A0;logging&#x00A0;into&#x00A0;a&#x00A0;local&#x00A0;openshift&#x00A0;cluster&#x00A0;(&#x00A0;oc&#x00A0;login&#x00A0;https:localhost:8443&#x00A0;)&#x00A0;<br /><span class="label"><a 
+ id="x1-5003r2"></a></span>curl&#x00A0;-X&#x00A0;GET&#x00A0;-H&#x00A0;&#8221;Authorization&#x00A0;Bearer&#x00A0;$(oc&#x00A0;whoami&#x00A0;-t)&#8221;&#x00A0;https://localhost:8443/oapi/v1&#x00A0;--insecure&#x00A0;<br /><span class="label"><a 
+ id="x1-5004r3"></a></span>{&#x00A0;<br /><span class="label"><a 
+ id="x1-5005r4"></a></span>&#x00A0;&#x00A0;&#8221;kind&#8221;:&#x00A0;&#8221;APIResourceList&#8221;,&#x00A0;<br /><span class="label"><a 
+ id="x1-5006r5"></a></span>&#x00A0;&#x00A0;&#8221;groupVersion&#8221;:&#x00A0;&#8221;v1&#8221;,&#x00A0;<br /><span class="label"><a 
+ id="x1-5007r6"></a></span>&#x00A0;&#x00A0;&#8221;resources&#8221;:&#x00A0;[&#x00A0;<br /><span class="label"><a 
+ id="x1-5008r7"></a></span>&#x00A0;&#x00A0;&#x00A0;&#x00A0;{&#x00A0;<br /><span class="label"><a 
+ id="x1-5009r8"></a></span>&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#8221;name&#8221;:&#x00A0;&#8221;appliedclusterresourcequotas&#8221;,&#x00A0;<br /><span class="label"><a 
+ id="x1-5010r9"></a></span>&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#8221;namespaced&#8221;:&#x00A0;true,&#x00A0;<br /><span class="label"><a 
+ id="x1-5011r10"></a></span>&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#8221;kind&#8221;:&#x00A0;&#8221;AppliedClusterResourceQuota&#8221;,&#x00A0;<br /><span class="label"><a 
+ id="x1-5012r11"></a></span>&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#8221;verbs&#8221;:&#x00A0;[&#x00A0;<br /><span class="label"><a 
+ id="x1-5013r12"></a></span>&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#8221;get&#8221;,&#x00A0;<br /><span class="label"><a 
+ id="x1-5014r13"></a></span>&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#8221;list&#8221;&#x00A0;<br /><span class="label"><a 
+ id="x1-5015r14"></a></span>&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;]&#x00A0;<br /><span class="label"><a 
+ id="x1-5016r15"></a></span>&#x00A0;&#x00A0;&#x00A0;&#x00A0;},&#x00A0;<br /><span class="label"><a 
+ id="x1-5017r16"></a></span>&#x00A0;&#x00A0;&#x00A0;&#x00A0;{&#x00A0;<br /><span class="label"><a 
+ id="x1-5018r17"></a></span>&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#8221;name&#8221;:&#x00A0;&#8221;buildconfigs&#8221;,&#x00A0;<br /><span class="label"><a 
+ id="x1-5019r18"></a></span>&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#8221;namespaced&#8221;:&#x00A0;true,&#x00A0;<br /><span class="label"><a 
+ id="x1-5020r19"></a></span>&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#8221;kind&#8221;:&#x00A0;&#8221;BuildConfig&#8221;,&#x00A0;<br /><span class="label"><a 
+ id="x1-5021r20"></a></span>&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#8221;verbs&#8221;:&#x00A0;[&#x00A0;<br /><span class="label"><a 
+ id="x1-5022r21"></a></span>&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#8221;create&#8221;,&#x00A0;<br /><span class="label"><a 
+ id="x1-5023r22"></a></span>&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#8221;delete&#8221;,&#x00A0;<br /><span class="label"><a 
+ id="x1-5024r23"></a></span>&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#8221;deletecollection&#8221;,&#x00A0;<br /><span class="label"><a 
+ id="x1-5025r24"></a></span>&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#8221;get&#8221;,&#x00A0;<br /><span class="label"><a 
+ id="x1-5026r25"></a></span>&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#8221;list&#8221;,&#x00A0;<br /><span class="label"><a 
+ id="x1-5027r26"></a></span>&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#8221;patch&#8221;,&#x00A0;<br /><span class="label"><a 
+ id="x1-5028r27"></a></span>&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#8221;update&#8221;,&#x00A0;<br /><span class="label"><a 
+ id="x1-5029r28"></a></span>&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#8221;watch&#8221;&#x00A0;<br /><span class="label"><a 
+ id="x1-5030r29"></a></span>&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;]&#x00A0;<br /><span class="label"><a 
+ id="x1-5031r30"></a></span>&#x00A0;&#x00A0;&#x00A0;&#x00A0;},&#x00A0;<br /><span class="label"><a 
+ id="x1-5032r31"></a></span>...
    </div>
 <p>   &#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;-
 <br 

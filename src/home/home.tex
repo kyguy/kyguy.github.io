@@ -9,48 +9,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % PREAMBLE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\usepackage{hyperref}
-\usepackage{listings}
-\usepackage{color}
-\usepackage{float}
-\usepackage{graphicx}
-\usepackage{tikz,tikz-dependency}
-
-\usetikzlibrary{automata,positioning,external,shapes,arrows,chains,matrix,scopes}
-
-% The following is for tikz externalization configuration which allows
-% tikZ diagrams to render correctly while being processed by htlatex 
-% http://tex.stackexchange.com/questions/158551/using-htlatex-with-tikz-dependency#158921
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\tikzset{
-    tex4ht inc/.style={
-        /pgf/images/include external/.code={%
-            \includegraphics[]{##1.svg}%
-        }
-
-    }
-}
-\tikzset{
- external/system call/.add={}                                                
-      ; inkscape -z -f "\image.pdf" -l "\image.svg"
-}
-\makeatletter
-\@ifpackageloaded{tex4ht}{
-    \tikzexternalize[mode=only graphics]
-}{
-    \tikzexternalize
-}
-\makeatletter
-\renewcommand\thesection{}
-\renewcommand\thesubsection{\@arabic\c@section.\@arabic\c@subsection}
-\makeatother
-
-% Removes section numbers
-\makeatletter
-\renewcommand\thesection{}
-%\renewcommand\thesubsection{\@arabic\c@section.\@arabic\c@subsection}
-\renewcommand\thesubsection{}
-\makeatother
+\input{../config}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % This beauty was provided by Alex from StackOverflow
@@ -156,7 +115,7 @@ I don't want this to happen
 \fi
 \begin{document}
 
-\centerline{\sc \large k-glyphs}
+\centerline{\texttt{k-glyphs}}
 \centerline{\sc Technology Explantions for the Layperson }
 %\centerline{\url{https://github.com/jboss-openshift/ce-testsuite.git/}}
 
@@ -218,12 +177,12 @@ I don't want this to happen
 \end{tikzpicture}
 \end{figure}
 
-\subsection{Cloud Enablement Middleware}
+\subsection{Cloud Computing}
 \begin{itemize}  
   \item \href{https://kyguy.github.io/src/containers/containers.html}{Containers} \ucmark
   \item \href{https://kyguy.github.io/src/openshift/openshift.html}{OpenShift} \ucmark
-  \item \href{https://kyguy.github.io/src/hacking_openshift/hacking_openshift.html}{Hacking OpenShift} \ucmark
-  %\item \href{http://kyguy.github.io/src/testsuite/testsuite.html}{Cloud Enablement Testsuite(Architecture)} \ucmark
+  \item \href{https://kyguy.github.io/src/hacking_openshift/hacking_openshift.html}{Hacking OpenShift}
+  %\item \href{http://kyguy.github.io/src/testsuite/testsuite.html}{Cloud Enablement Testsuite(Architecture)}
 \end{itemize}
 \ucmark Currently under development
 

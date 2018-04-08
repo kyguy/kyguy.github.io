@@ -17,7 +17,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
 
-\centerline{\sc \large OpenShift}
+\centerline{\texttt{OpenShift}}
 \centerline{\sc Architecture for the Layperson }
 \centerline{\url{https://github.com/openshift/origin}}
 
@@ -336,7 +336,7 @@ common operations. In the following example, the client command, (\textbf{oc who
 retrieve the authorization token to take a look at the HTTP interface, or Representational 
 State Transfer (\textbf{REST}) API:    
 
-\begin{lstlisting}[style=shell]
+\begin{lstlisting}
 # After logging into a local openshift cluster ( oc login https:localhost:8443 )
 curl -X GET -H "Authorization Bearer $(oc whoami -t)" https://localhost:8443/oapi/v1 --insecure
 {
