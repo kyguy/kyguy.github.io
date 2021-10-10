@@ -4,3 +4,7 @@
 
 layout: home
 ---
+[ASCII Table](/ascii.html)
+
+[Java Cheatsheet](/java.html)
+
