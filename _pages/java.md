@@ -2,6 +2,22 @@
 title: Java Cheatsheet
 ---
 
+Conversions
+{% highlight java %}
+String.valueOf();
+{% endhighlight %}
+
+Strings
+{% highlight java %}
+StringBuilder x =new StringBuilder("");
+x.append()
+x.insert()
+x.replace()
+x.reverse()
+x.delete()
+x.capacity()
+{% endhighlight %}
+
 ArrayList
 {% highlight java %}
 
@@ -35,8 +51,47 @@ HashMap
 Map<String, String> x = new HashMap<String, String>();
 x.put();
 x.get();
+x.containsKey();
+{% endhighlight %}
+
+
+HashSet
+
+{% highlight java %}
+
+Set<String> x = new HashSet<>();
+x.add();
+x.get();
 x.contains();
 {% endhighlight %}
+
+Characters
+{% highlight java %}
+
+char x = \0
+
+{% endhighlight %}
+
+Queue
+{% highlight java %}
+Queue x = new LinkedList();
+Queue y = new PriorityQueue();
+x.add()
+x.offer()
+
+x.remove()
+x.poll()
+
+x.element()
+x.peek();
+
+x.contains()
+
+x.clear()
+x.size()
+x.isEmpty()
+{% endhighlight %}
+
 
 Creating Objects
 
