@@ -268,18 +268,28 @@ async function main() {
   console.log(
     "Created assets/heatmap.svg"
   );
-  
+
   // Create PNG copy for LinkedIn/social previews
-  sharp(Buffer.from(svg))
-    .png()
-    .toFile("assets/heatmap.png")
-    .then(() => {
-      console.log("Created assets/heatmap.png");
-    })
-    .catch((err) => {
-      console.error("PNG generation failed:", err);
-      process.exit(1);
-    });
+  sharp(Buffer.from(svg), {
+    density: 300
+  })
+  .resize(1200, 627, {
+    fit: "contain",
+    background: "#0d1117"
+  })
+  .flatten({ background: "#0d1117" })
+  .png({
+    quality: 100
+  })
+  .toFile("assets/heatmap.png")
+  .then(() => {
+    console.log("Created assets/heatmap.png");
+  })
+  .catch((err) => {
+    console.error("PNG generation failed:", err);
+    process.exit(1);
+  });
+
 }
 
 
