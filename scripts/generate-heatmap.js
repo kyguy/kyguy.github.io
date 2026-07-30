@@ -1,4 +1,5 @@
 const fs = require("fs");
+const sharp = require("sharp");
 
 const username = "kyguy";
 const token = process.env.GITHUB_TOKEN;
@@ -249,8 +250,7 @@ async function main() {
   console.log(
     `Received ${days.length} days`
   );
-
-
+ 
   const svg =
     generateSVG(days);
 
@@ -265,10 +265,21 @@ async function main() {
     svg
   );
 
-
   console.log(
     "Created assets/heatmap.svg"
   );
+  
+  // Create PNG copy for LinkedIn/social previews
+  sharp(Buffer.from(svg))
+    .png()
+    .toFile("assets/heatmap.png")
+    .then(() => {
+      console.log("Created assets/heatmap.png");
+    })
+    .catch((err) => {
+      console.error("PNG generation failed:", err);
+      process.exit(1);
+    });
 }
 
 
