@@ -1,0 +1,42 @@
+name: Update GitHub Heatmap
+
+on:
+  schedule:
+    - cron: "0 0 * * 0"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate heatmap
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          node scripts/generate-heatmap.js
+
+      - name: Verify heatmap exists
+        run: |
+          ls -la assets
+          test -f assets/heatmap.svg
+
+      - name: Commit heatmap
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+
+          git add assets/heatmap.svg
+
+          git diff --cached --quiet && echo "No changes" && exit 0
+
+          git commit -m "Update GitHub heatmap"
+          git push
